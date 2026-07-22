@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { initialData } from './initialData';
+import { supabase } from '../lib/supabase';
 
 const GraphQLContext = createContext();
 
 const LOCAL_STORAGE_KEY = 'CMDLAB_ART_COLLECTIVE_STATE_V2';
-
 
 export const GraphQLProvider = ({ children }) => {
   const [data, setData] = useState(() => {
@@ -19,15 +19,110 @@ export const GraphQLProvider = ({ children }) => {
     return initialData;
   });
 
-  // Role Management: 'VISITOR', 'ADMIN', 'ARTIST'
   const [session, setSession] = useState({
     role: 'VISITOR', // 'VISITOR', 'ADMIN', 'ARTIST'
-    artistId: 'artist-lonare' // default artist when logged in as ARTIST
+    artistId: 'artist-lonare',
+    authUser: null
   });
 
-  // Audio Player Global State
   const [currentPlayingTrack, setCurrentPlayingTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // Sync state from Supabase on mount
+  useEffect(() => {
+    const fetchSupabaseData = async () => {
+      try {
+        // 1. Fetch site settings
+        const { data: settings } = await supabase.from('site_settings').select('*').single();
+        // 2. Fetch profiles
+        const { data: profiles } = await supabase.from('profiles').select('*');
+        // 3. Fetch tracks
+        const { data: tracks } = await supabase.from('tracks').select('*');
+        // 4. Fetch posts
+        const { data: posts } = await supabase.from('posts').select('*');
+        // 5. Fetch social links
+        const { data: socials } = await supabase.from('social_links').select('*');
+
+        if (profiles && profiles.length > 0) {
+          const formattedArtists = profiles.map(p => ({
+            id: p.id,
+            name: p.name,
+            handle: p.handle,
+            role: p.role || 'Integrante del Colectivo',
+            bio: p.bio || '',
+            avatar: p.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=80',
+            coverImage: p.cover_url || 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&auto=format&fit=crop&q=80',
+            isFounder: p.is_founder || false,
+            genres: p.genres || ['Música'],
+            socialLinks: (socials || []).filter(s => s.artist_id === p.id).map(s => ({
+              platform: s.platform,
+              url: s.url,
+              label: s.label
+            })),
+            tracks: (tracks || []).filter(t => t.artist_id === p.id).map(t => ({
+              id: t.id,
+              title: t.title,
+              duration: t.duration || '3:30',
+              genre: t.genre || 'Electrónica',
+              audioUrl: t.audio_url,
+              coverUrl: t.cover_url,
+              spotifyUrl: t.spotify_url,
+              appleUrl: t.apple_url
+            })),
+            posts: (posts || []).filter(post => post.artist_id === p.id).map(post => ({
+              id: post.id,
+              title: post.title,
+              content: post.content,
+              createdAt: post.created_at ? post.created_at.split('T')[0] : '2026-07-22',
+              tags: post.tags || [],
+              mediaUrl: post.media_url
+            }))
+          }));
+
+          setData(prev => ({
+            ...prev,
+            artists: formattedArtists,
+            siteSettings: settings ? {
+              siteName: settings.site_name || prev.siteSettings.siteName,
+              slogan: settings.slogan || prev.siteSettings.slogan,
+              manifesto: settings.manifesto || prev.siteSettings.manifesto,
+              primaryColor: settings.primary_color || prev.siteSettings.primaryColor,
+              secondaryColor: settings.secondary_color || prev.siteSettings.secondaryColor,
+              accentGlow: settings.accent_glow || prev.siteSettings.accentGlow,
+              heroAnnouncement: settings.hero_announcement || prev.siteSettings.heroAnnouncement,
+              groupSocials: prev.siteSettings.groupSocials
+            } : prev.siteSettings
+          }));
+        }
+      } catch (err) {
+        console.log('Supabase sync notice: Using pre-seeded initial data', err);
+      }
+    };
+
+    fetchSupabaseData();
+  }, []);
+
+  // Listen to Supabase Auth State Changes
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, authSession) => {
+      if (authSession?.user) {
+        setSession(prev => ({
+          ...prev,
+          authUser: authSession.user,
+          role: 'ADMIN' // Default to admin for logged-in users
+        }));
+      } else {
+        setSession(prev => ({
+          ...prev,
+          authUser: null
+        }));
+      }
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -37,7 +132,7 @@ export const GraphQLProvider = ({ children }) => {
     }
   }, [data]);
 
-  // Apply dynamic CSS Variables for site customization
+  // Apply dynamic CSS Variables
   useEffect(() => {
     if (data.siteSettings) {
       const root = document.documentElement;
@@ -47,7 +142,6 @@ export const GraphQLProvider = ({ children }) => {
     }
   }, [data.siteSettings]);
 
-  // GraphQL Resolver Engine
   const executeQuery = (queryName, variables = {}) => {
     switch (queryName) {
       case 'getSiteSettings':
@@ -61,7 +155,7 @@ export const GraphQLProvider = ({ children }) => {
     }
   };
 
-  const executeMutation = (mutationName, variables = {}) => {
+  const executeMutation = async (mutationName, variables = {}) => {
     let newData = { ...data };
 
     if (mutationName === 'updateSiteSettings') {
@@ -70,6 +164,23 @@ export const GraphQLProvider = ({ children }) => {
         ...variables.input
       };
       setData(newData);
+
+      // Sync to Supabase
+      try {
+        await supabase.from('site_settings').upsert({
+          id: 1,
+          site_name: variables.input.siteName,
+          slogan: variables.input.slogan,
+          manifesto: variables.input.manifesto,
+          primary_color: variables.input.primaryColor,
+          secondary_color: variables.input.secondaryColor,
+          accent_glow: variables.input.accentGlow,
+          hero_announcement: variables.input.heroAnnouncement
+        });
+      } catch (err) {
+        console.error('Supabase settings update error', err);
+      }
+
       return newData.siteSettings;
     }
 
