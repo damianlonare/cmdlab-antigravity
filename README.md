@@ -32,6 +32,37 @@ Instead of treating the collective as a standard pop group, CMD Lab emphasizes *
 
 ---
 
+### 🔒 Security & Performance Hardening Checklist (TODOs)
+
+> [!IMPORTANT]
+> **Security is a Top Priority**: Below are critical production security and performance milestones to be implemented before scaling to high-traffic environments.
+
+#### 🛡️ 1. Security Hardening TODOs
+- [ ] **Strict Supabase Row-Level Security (RLS) Rules**:
+  - Enforce `auth.uid() = artist_id` check on all `INSERT`, `UPDATE`, and `DELETE` operations so artists can *only* mutate their own profile, tracks, and posts.
+  - Restrict `public.site_settings` table mutation access strictly to users with `is_admin = true`.
+- [ ] **Input Sanitization & XSS Protection**:
+  - Integrate `DOMPurify` to sanitize all artist-submitted bios, posts, taglines, and manifesto text before rendering into HTML.
+- [ ] **Content Security Policy (CSP) & HTTP Headers**:
+  - Implement security response headers (`Content-Security-Policy`, `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`) in Vercel/Netlify config.
+- [ ] **API Rate Limiting & Auth Protection**:
+  - Enable rate-limiting on authentication attempts in Supabase Auth Settings to prevent brute-force attacks.
+  - Enable Two-Factor Authentication (MFA/2FA) for Super Admin accounts.
+- [ ] **Credential Protection**:
+  - Ensure Supabase Service Role Key is **NEVER** exposed in the client-side bundle or public repository (`.env` only includes anon key).
+
+#### ⚡ 2. Performance Optimization TODOs
+- [ ] **React Code-Splitting (`React.lazy` & `Suspense`)**:
+  - Lazy load heavy modules (`AdminDashboard.jsx`, `ArtistPortal.jsx`, `VideoModal.jsx`) so public visitors download a minimal initial JavaScript bundle.
+- [ ] **Media & Image Optimization**:
+  - Implement automatic WebP image conversion and responsive `srcset` attributes for artist avatars and cover banners.
+- [ ] **Audio CDN & Byte-Range Caching**:
+  - Serve high-fidelity audio streams via a dedicated CDN with HTTP range request headers for smooth instant audio seeking.
+- [ ] **Service Worker / PWA Caching**:
+  - Cache core static assets and player UI for offline availability.
+
+---
+
 ### ⚠️ Product Limitations (Current Phase)
 1. **Hybrid Storage Engine**:
    - The platform includes a client-side V3 storage cache alongside Supabase integration. Remote cloud syncing requires executing the provided `supabase_setup.sql` in your Supabase project.
