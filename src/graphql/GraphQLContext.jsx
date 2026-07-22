@@ -4,14 +4,17 @@ import { supabase } from '../lib/supabase';
 
 const GraphQLContext = createContext();
 
-const LOCAL_STORAGE_KEY = 'CMDLAB_ART_COLLECTIVE_STATE_V2';
+const LOCAL_STORAGE_KEY = 'CMDLAB_ART_COLLECTIVE_STATE_V3';
 
 export const GraphQLProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.siteSettings) {
+          return parsed;
+        }
       }
     } catch (e) {
       console.error('Failed to load state from localStorage', e);
@@ -79,23 +82,33 @@ export const GraphQLProvider = ({ children }) => {
             }))
           }));
 
-          setData(prev => ({
-            ...prev,
-            artists: formattedArtists,
-            siteSettings: settings ? {
-              siteName: settings.site_name || prev.siteSettings.siteName,
-              slogan: settings.slogan || prev.siteSettings.slogan,
-              manifesto: settings.manifesto || prev.siteSettings.manifesto,
-              primaryColor: settings.primary_color || prev.siteSettings.primaryColor,
-              secondaryColor: settings.secondary_color || prev.siteSettings.secondaryColor,
-              accentGlow: settings.accent_glow || prev.siteSettings.accentGlow,
-              heroAnnouncement: settings.hero_announcement || prev.siteSettings.heroAnnouncement,
-              groupSocials: prev.siteSettings.groupSocials
-            } : prev.siteSettings
-          }));
+          setData(prev => {
+            const updated = {
+              ...prev,
+              artists: formattedArtists,
+              siteSettings: settings ? {
+                siteName: settings.site_name || prev.siteSettings.siteName,
+                slogan: settings.slogan || prev.siteSettings.slogan,
+                manifesto: settings.manifesto || prev.siteSettings.manifesto,
+                primaryColor: settings.primary_color || prev.siteSettings.primaryColor,
+                secondaryColor: settings.secondary_color || prev.siteSettings.secondaryColor,
+                accentGlow: settings.accent_glow || prev.siteSettings.accentGlow,
+                bgColor: settings.bg_color || prev.siteSettings.bgColor,
+                cardBgColor: settings.card_bg_color || prev.siteSettings.cardBgColor,
+                textPrimaryColor: settings.text_primary_color || prev.siteSettings.textPrimaryColor,
+                textSecondaryColor: settings.text_secondary_color || prev.siteSettings.textSecondaryColor,
+                heroAnnouncement: settings.hero_announcement || prev.siteSettings.heroAnnouncement,
+                groupSocials: prev.siteSettings.groupSocials
+              } : prev.siteSettings
+            };
+            try {
+              localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+            } catch (e) {}
+            return updated;
+          });
         }
       } catch (err) {
-        console.log('Supabase sync notice: Using pre-seeded initial data', err);
+        console.log('Supabase sync notice: Using cached settings', err);
       }
     };
 
@@ -109,7 +122,7 @@ export const GraphQLProvider = ({ children }) => {
         setSession(prev => ({
           ...prev,
           authUser: authSession.user,
-          role: 'ADMIN' // Default to admin for logged-in users
+          role: 'ADMIN'
         }));
       } else {
         setSession(prev => ({
@@ -124,6 +137,7 @@ export const GraphQLProvider = ({ children }) => {
     };
   }, []);
 
+  // Persist state to localStorage whenever data changes
   useEffect(() => {
     try {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
@@ -132,7 +146,7 @@ export const GraphQLProvider = ({ children }) => {
     }
   }, [data]);
 
-  // Apply dynamic CSS Variables for full site color customization
+  // Apply dynamic CSS Variables to document root
   useEffect(() => {
     if (data.siteSettings) {
       const root = document.documentElement;
@@ -145,7 +159,6 @@ export const GraphQLProvider = ({ children }) => {
       root.style.setProperty('--color-text-secondary', data.siteSettings.textSecondaryColor || '#a3a3a3');
     }
   }, [data.siteSettings]);
-
 
   const executeQuery = (queryName, variables = {}) => {
     switch (queryName) {
@@ -168,9 +181,24 @@ export const GraphQLProvider = ({ children }) => {
         ...newData.siteSettings,
         ...variables.input
       };
+      
+      // Instantly update React state & localStorage
       setData(newData);
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newData));
+      } catch (e) {}
 
-      // Sync to Supabase
+      // Instantly apply root CSS variables on document
+      const root = document.documentElement;
+      if (variables.input.primaryColor) root.style.setProperty('--color-primary', variables.input.primaryColor);
+      if (variables.input.secondaryColor) root.style.setProperty('--color-secondary', variables.input.secondaryColor);
+      if (variables.input.accentGlow) root.style.setProperty('--color-accent-glow', variables.input.accentGlow);
+      if (variables.input.bgColor) root.style.setProperty('--color-bg', variables.input.bgColor);
+      if (variables.input.cardBgColor) root.style.setProperty('--color-card-bg', variables.input.cardBgColor);
+      if (variables.input.textPrimaryColor) root.style.setProperty('--color-text-primary', variables.input.textPrimaryColor);
+      if (variables.input.textSecondaryColor) root.style.setProperty('--color-text-secondary', variables.input.textSecondaryColor);
+
+      // Sync to Supabase in background
       try {
         await supabase.from('site_settings').upsert({
           id: 1,
@@ -180,6 +208,10 @@ export const GraphQLProvider = ({ children }) => {
           primary_color: variables.input.primaryColor,
           secondary_color: variables.input.secondaryColor,
           accent_glow: variables.input.accentGlow,
+          bg_color: variables.input.bgColor,
+          card_bg_color: variables.input.cardBgColor,
+          text_primary_color: variables.input.textPrimaryColor,
+          text_secondary_color: variables.input.textSecondaryColor,
           hero_announcement: variables.input.heroAnnouncement
         });
       } catch (err) {
@@ -206,6 +238,9 @@ export const GraphQLProvider = ({ children }) => {
       };
       newData.artists = [...newData.artists, newArtist];
       setData(newData);
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newData));
+      } catch (e) {}
       return newArtist;
     }
 
@@ -217,6 +252,9 @@ export const GraphQLProvider = ({ children }) => {
           ...variables.input
         };
         setData(newData);
+        try {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newData));
+        } catch (e) {}
         return newData.artists[index];
       }
     }
@@ -224,6 +262,9 @@ export const GraphQLProvider = ({ children }) => {
     if (mutationName === 'deleteArtist') {
       newData.artists = newData.artists.filter(a => a.id !== variables.id);
       setData(newData);
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newData));
+      } catch (e) {}
       return true;
     }
 
@@ -240,6 +281,9 @@ export const GraphQLProvider = ({ children }) => {
         };
         newData.artists[artistIndex].posts = [newPost, ...newData.artists[artistIndex].posts];
         setData(newData);
+        try {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newData));
+        } catch (e) {}
         return newPost;
       }
     }
@@ -260,6 +304,9 @@ export const GraphQLProvider = ({ children }) => {
         };
         newData.artists[artistIndex].tracks = [newTrack, ...newData.artists[artistIndex].tracks];
         setData(newData);
+        try {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newData));
+        } catch (e) {}
         return newTrack;
       }
     }
