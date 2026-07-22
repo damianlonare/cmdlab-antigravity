@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { useGraphQL } from '../graphql/GraphQLContext';
 import { SocialIcon } from './SocialIcon';
 import { X, Play, Pause, Disc, Music, Calendar, Star } from 'lucide-react';
@@ -8,9 +9,8 @@ export const ArtistModal = ({ artist, onClose }) => {
 
   if (!artist) return null;
 
-  return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
-
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
       
       {/* Tarjeta Modal */}
       <div className="relative w-full max-w-3xl my-8 bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl space-y-6">
@@ -195,6 +195,7 @@ export const ArtistModal = ({ artist, onClose }) => {
 
       </div>
 
-    </div>
+    </div>,
+    document.body
   );
 };

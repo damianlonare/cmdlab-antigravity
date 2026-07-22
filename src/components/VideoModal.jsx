@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { SocialIcon } from './SocialIcon';
 import { X, ExternalLink } from 'lucide-react';
 
@@ -27,9 +28,8 @@ export const VideoModal = ({ videoUrl, videoTitle, onClose }) => {
 
   const embedUrl = getEmbedUrl(videoUrl);
 
-  return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-neutral-950/90 backdrop-blur-2xl animate-in fade-in duration-200">
-
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-neutral-950/90 backdrop-blur-2xl animate-in fade-in duration-200">
       
       {/* Modal Container */}
       <div className="relative w-full max-w-4xl bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl space-y-4">
@@ -76,6 +76,7 @@ export const VideoModal = ({ videoUrl, videoTitle, onClose }) => {
 
       </div>
 
-    </div>
+    </div>,
+    document.body
   );
 };

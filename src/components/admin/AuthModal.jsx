@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '../../lib/supabase';
 import { Shield, Mail, Lock, X, UserPlus, LogIn } from 'lucide-react';
 
@@ -57,8 +58,8 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-neutral-950/90 backdrop-blur-2xl overflow-y-auto animate-in fade-in duration-200">
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 bg-neutral-950/90 backdrop-blur-2xl overflow-y-auto animate-in fade-in duration-200">
       
       {/* Card with constrained max-height and auto scroll */}
       <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-2xl space-y-5 my-auto">
@@ -205,6 +206,7 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
