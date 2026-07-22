@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Shield, Mail, Lock, X, UserPlus, LogIn, Sparkles } from 'lucide-react';
+import { Shield, Mail, Lock, X, UserPlus, LogIn } from 'lucide-react';
 
 export const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -58,17 +58,19 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-2xl space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-neutral-950/85 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
+      
+      {/* Card with constrained max-height and auto scroll */}
+      <div className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-2xl space-y-5 my-auto">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
+        <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-xl bg-purple-950 border border-purple-800 text-purple-300">
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-extrabold text-white">
+              <h2 className="text-base sm:text-lg font-extrabold text-white">
                 {isSignUp ? 'Crear Cuenta de Artista' : 'Acceso Privado CMD Lab'}
               </h2>
               <p className="text-xs text-neutral-400">
@@ -79,13 +81,13 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }) => {
 
           <button
             onClick={onClose}
-            className="p-1.5 text-neutral-400 hover:text-white rounded-full bg-neutral-800/80"
+            className="p-1.5 text-neutral-400 hover:text-white rounded-full bg-neutral-800/80 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Tab Switcher - Highlighted */}
+        {/* Tab Switcher */}
         <div className="flex bg-neutral-950 p-1.5 rounded-2xl border border-neutral-800">
           <button
             type="button"
@@ -109,11 +111,11 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }) => {
             }`}
           >
             <UserPlus className="w-3.5 h-3.5 text-cyan-300" />
-            <span>Registrarse (Nuevo Artista)</span>
+            <span>Registrarse</span>
           </button>
         </div>
 
-        {/* Error / Success Alerts */}
+        {/* Alerts */}
         {errorMsg && (
           <div className="p-3 rounded-xl bg-red-950/80 border border-red-800 text-red-300 text-xs font-medium">
             {errorMsg}
