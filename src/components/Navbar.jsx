@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
 import { AuthModal } from './admin/AuthModal';
 import { supabase } from '../lib/supabase';
-import { Music, Shield, LogIn, LogOut, UserCheck, Menu, X } from 'lucide-react';
+import { Music, Shield, LogIn, LogOut, Menu, X, LayoutDashboard, Eye } from 'lucide-react';
 
 export const Navbar = () => {
   const { siteSettings, session, setSession } = useGraphQL();
@@ -22,17 +22,38 @@ export const Navbar = () => {
     setSession(prev => ({
       ...prev,
       authUser: user,
-      role: 'ADMIN' // Switch to authenticated portal
+      role: 'ADMIN' // Switch to authenticated admin studio
     }));
   };
 
+  const handleNavClick = (e, targetId) => {
+    e.preventDefault();
+    if (session.role !== 'VISITOR') {
+      setSession(prev => ({ ...prev, role: 'VISITOR' }));
+    }
+    setTimeout(() => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-neutral-950/80 border-b border-neutral-800/80 transition-all duration-300">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-neutral-950/85 border-b border-neutral-800/80 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         
         {/* Logo del Colectivo */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] p-0.5 shadow-lg shadow-[var(--color-primary)]/20 animate-pulse">
+        <div 
+          onClick={(e) => handleNavClick(e, 'manifesto')}
+          className="flex items-center gap-3 cursor-pointer group"
+        >
+          <div 
+            className="w-10 h-10 rounded-xl p-0.5 shadow-lg transition-transform group-hover:scale-105"
+            style={{
+              background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
+            }}
+          >
             <div className="w-full h-full bg-neutral-950 rounded-[10px] flex items-center justify-center">
               <Music className="w-5 h-5 text-white" />
             </div>
@@ -53,24 +74,59 @@ export const Navbar = () => {
         </div>
 
         {/* Navegación Principal */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-300">
-          <a href="#manifesto" className="hover:text-white transition-colors">Manifiesto</a>
-          <a href="#roster" className="hover:text-white transition-colors">Artistas</a>
-          <a href="#feed" className="hover:text-white transition-colors">Lanzamientos</a>
+        <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-neutral-300">
+          <a
+            href="#manifesto"
+            onClick={(e) => handleNavClick(e, 'manifesto')}
+            className="hover:text-white transition-colors"
+          >
+            Manifiesto
+          </a>
+          <a
+            href="#roster"
+            onClick={(e) => handleNavClick(e, 'roster')}
+            className="hover:text-white transition-colors"
+          >
+            Artistas
+          </a>
+          <a
+            href="#feed"
+            onClick={(e) => handleNavClick(e, 'feed')}
+            className="hover:text-white transition-colors"
+          >
+            Lanzamientos
+          </a>
         </nav>
 
-        {/* Botón de Acceso / Login de Producción */}
+        {/* Botones de Control de Sesión */}
         <div className="hidden lg:flex items-center gap-3">
           {session.authUser ? (
-            <div className="flex items-center gap-3 bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-1.5 shadow-md">
-              <div className="flex items-center gap-2 text-xs font-semibold text-purple-300">
-                <Shield className="w-4 h-4 text-purple-400" />
-                <span className="truncate max-w-[140px]">{session.authUser.email}</span>
+            <div className="flex items-center gap-2 bg-neutral-900 border border-neutral-800 rounded-xl p-1 shadow-md">
+              <button
+                onClick={() => setSession(prev => ({ ...prev, role: session.role === 'ADMIN' ? 'VISITOR' : 'ADMIN' }))}
+                className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg text-neutral-200 hover:text-white bg-neutral-950 border border-neutral-800 hover:border-neutral-700 transition-all"
+              >
+                {session.role === 'ADMIN' ? (
+                  <>
+                    <Eye className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Ver Sitio</span>
+                  </>
+                ) : (
+                  <>
+                    <LayoutDashboard className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Ir a Panel Admin</span>
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center gap-2 px-2 text-xs font-semibold text-purple-300">
+                <Shield className="w-3.5 h-3.5 text-purple-400" />
+                <span className="truncate max-w-[120px]">{session.authUser.email}</span>
               </div>
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1 text-xs text-neutral-400 hover:text-red-400 px-2 py-1 rounded-lg hover:bg-neutral-800 transition-colors"
+                className="flex items-center gap-1 text-xs text-neutral-400 hover:text-red-400 px-2 py-1.5 rounded-lg hover:bg-neutral-800 transition-colors"
                 title="Cerrar Sesión"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -80,9 +136,12 @@ export const Navbar = () => {
           ) : (
             <button
               onClick={() => setAuthModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 hover:border-neutral-700 text-white text-xs font-semibold transition-all shadow-sm hover:scale-105"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-md hover:scale-105"
+              style={{
+                background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
+              }}
             >
-              <LogIn className="w-4 h-4 text-purple-400" />
+              <LogIn className="w-4 h-4" />
               <span>Acceso Artistas</span>
             </button>
           )}
@@ -101,27 +160,60 @@ export const Navbar = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden px-4 pt-2 pb-6 border-t border-neutral-800 bg-neutral-950/95 space-y-4">
           <div className="flex flex-col space-y-3 font-medium text-neutral-300 text-sm">
-            <a href="#manifesto" onClick={() => setMobileMenuOpen(false)} className="hover:text-white">Manifiesto</a>
-            <a href="#roster" onClick={() => setMobileMenuOpen(false)} className="hover:text-white">Artistas</a>
-            <a href="#feed" onClick={() => setMobileMenuOpen(false)} className="hover:text-white">Lanzamientos</a>
+            <a
+              href="#manifesto"
+              onClick={(e) => { setMobileMenuOpen(false); handleNavClick(e, 'manifesto'); }}
+              className="hover:text-white"
+            >
+              Manifiesto
+            </a>
+            <a
+              href="#roster"
+              onClick={(e) => { setMobileMenuOpen(false); handleNavClick(e, 'roster'); }}
+              className="hover:text-white"
+            >
+              Artistas
+            </a>
+            <a
+              href="#feed"
+              onClick={(e) => { setMobileMenuOpen(false); handleNavClick(e, 'feed'); }}
+              className="hover:text-white"
+            >
+              Lanzamientos
+            </a>
           </div>
 
           <div className="pt-4 border-t border-neutral-800">
             {session.authUser ? (
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-red-400 text-sm font-semibold"
-              >
-                <LogOut className="w-4 h-4" />
-                <span>Cerrar Sesión ({session.authUser.email})</span>
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setSession(prev => ({ ...prev, role: session.role === 'ADMIN' ? 'VISITOR' : 'ADMIN' }));
+                  }}
+                  className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-white text-sm font-semibold"
+                >
+                  <LayoutDashboard className="w-4 h-4 text-cyan-400" />
+                  <span>{session.role === 'ADMIN' ? 'Ver Sitio Público' : 'Ir a Panel Admin'}</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-red-400 text-sm font-semibold"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Cerrar Sesión</span>
+                </button>
+              </div>
             ) : (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   setAuthModalOpen(true);
                 }}
-                className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-sm font-semibold shadow-lg"
+                className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl text-white text-sm font-semibold shadow-lg"
+                style={{
+                  background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
+                }}
               >
                 <LogIn className="w-4 h-4" />
                 <span>Acceso Artistas</span>
