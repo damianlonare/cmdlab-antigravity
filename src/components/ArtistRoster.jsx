@@ -12,23 +12,23 @@ export const ArtistRoster = () => {
     <section id="roster" className="py-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
+        {/* Encabezado */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono uppercase text-cyan-400 mb-2">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase text-cyan-400 mb-2">
               <Sparkles className="w-4 h-4" />
-              <span>Collective Members & Collaborators</span>
+              <span>Integrantes y Colaboradores</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Artist Roster
+              Nuestros Artistas
             </h2>
           </div>
           <p className="text-sm text-neutral-400 max-w-md">
-            Meet the sound designers, music producers, and visual creators shaping the CMD Lab soundscape.
+            Conoce a los músicos, productores, diseñadores de sonido y creadores visuales que conforman el universo de CMD Lab.
           </p>
         </div>
 
-        {/* Grid of Artist Cards */}
+        {/* Cuadrícula de Tarjetas de Artista */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {artists.map((artist) => {
             const featuredTrack = artist.tracks && artist.tracks.length > 0 ? artist.tracks[0] : null;
@@ -39,7 +39,7 @@ export const ArtistRoster = () => {
                 key={artist.id}
                 className="group relative rounded-3xl bg-neutral-900/60 border border-neutral-800/80 hover:border-neutral-700 backdrop-blur-xl overflow-hidden transition-all duration-300 hover:-translate-y-1.5 shadow-xl flex flex-col justify-between"
               >
-                {/* Cover Header */}
+                {/* Imagen de Portada */}
                 <div className="relative h-40 w-full overflow-hidden bg-neutral-950">
                   <img
                     src={artist.coverImage || artist.avatar}
@@ -51,15 +51,15 @@ export const ArtistRoster = () => {
                   {artist.isFounder && (
                     <div className="absolute top-3 right-3 flex items-center gap-1 bg-amber-500/90 text-neutral-950 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full backdrop-blur-md shadow-lg">
                       <Star className="w-3 h-3 fill-current" />
-                      <span>Founder</span>
+                      <span>Fundador</span>
                     </div>
                   )}
                 </div>
 
-                {/* Card Content */}
+                {/* Contenido de la Tarjeta */}
                 <div className="p-6 relative z-10 -mt-12 space-y-4 flex-1 flex flex-col justify-between">
                   <div>
-                    {/* Avatar & Title */}
+                    {/* Avatar y Nombre */}
                     <div className="flex items-end gap-4 mb-3">
                       <img
                         src={artist.avatar}
@@ -70,23 +70,23 @@ export const ArtistRoster = () => {
                         <h3 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors">
                           {artist.name}
                         </h3>
-                        <p className="text-xs text-neutral-400 font-mono">
+                        <p className="text-xs text-neutral-400 font-medium">
                           @{artist.handle}
                         </p>
                       </div>
                     </div>
 
-                    {/* Role */}
+                    {/* Rol */}
                     <div className="text-xs font-semibold text-purple-400 mb-2 font-mono">
                       {artist.role}
                     </div>
 
-                    {/* Bio */}
+                    {/* Biografía */}
                     <p className="text-xs text-neutral-300 line-clamp-3 leading-relaxed">
                       {artist.bio}
                     </p>
 
-                    {/* Genres */}
+                    {/* Géneros */}
                     {artist.genres && artist.genres.length > 0 && (
                       <div className="flex flex-wrap gap-1.5 mt-3">
                         {artist.genres.map((g, idx) => (
@@ -98,7 +98,7 @@ export const ArtistRoster = () => {
                     )}
                   </div>
 
-                  {/* Social Links Pills */}
+                  {/* Enlaces Sociales */}
                   <div className="space-y-3 pt-3 border-t border-neutral-800/80">
                     <div className="flex flex-wrap gap-2">
                       {artist.socialLinks?.map((link, idx) => (
@@ -112,12 +112,12 @@ export const ArtistRoster = () => {
                           className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-neutral-950 hover:bg-neutral-800 border border-neutral-800 hover:border-neutral-700 text-neutral-300 hover:text-white transition-all"
                         >
                           <SocialIcon platform={link.platform} className="w-3.5 h-3.5" />
-                          <span className="font-mono">{link.platform}</span>
+                          <span>{link.platform}</span>
                         </a>
                       ))}
                     </div>
 
-                    {/* Audio Preview & View Profile CTA */}
+                    {/* Reproductor de Audio y Botón Perfil */}
                     <div className="flex items-center justify-between pt-2">
                       {featuredTrack ? (
                         <button
@@ -129,17 +129,17 @@ export const ArtistRoster = () => {
                           ) : (
                             <Play className="w-3.5 h-3.5 text-purple-300" />
                           )}
-                          <span>{isTrackPlaying ? 'Pause Audio' : 'Preview Track'}</span>
+                          <span>{isTrackPlaying ? 'Pausar Muestra' : 'Escuchar Muestra'}</span>
                         </button>
                       ) : (
-                        <span className="text-[11px] text-neutral-400 italic">No tracks yet</span>
+                        <span className="text-[11px] text-neutral-400 italic">Sin muestras aún</span>
                       )}
 
                       <button
                         onClick={() => setSelectedArtist(artist)}
                         className="text-xs text-neutral-300 hover:text-white font-medium flex items-center gap-1 hover:underline underline-offset-4"
                       >
-                        <span>Full Profile</span>
+                        <span>Ver Perfil</span>
                         <ExternalLink className="w-3 h-3" />
                       </button>
                     </div>
@@ -153,7 +153,7 @@ export const ArtistRoster = () => {
 
       </div>
 
-      {/* Artist Profile Modal */}
+      {/* Modal de Detalle de Artista */}
       {selectedArtist && (
         <ArtistModal
           artist={selectedArtist}

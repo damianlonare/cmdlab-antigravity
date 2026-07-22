@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
-import { Radio, Calendar, User, Tag, Sparkles, Send } from 'lucide-react';
+import { Radio, Calendar, Tag } from 'lucide-react';
 
 export const NewsFeed = () => {
   const { artists } = useGraphQL();
-  const [selectedTag, setSelectedTag] = useState('ALL');
+  const [selectedTag, setSelectedTag] = useState('TODAS');
 
-  // Aggregate all posts across all artists
+  // Recopilar todas las publicaciones de los artistas
   const allPosts = artists.flatMap(artist =>
     (artist.posts || []).map(post => ({
       ...post,
@@ -17,9 +17,9 @@ export const NewsFeed = () => {
     }))
   ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const allTags = ['ALL', ...new Set(allPosts.flatMap(p => p.tags || []))];
+  const allTags = ['TODAS', ...new Set(allPosts.flatMap(p => p.tags || []))];
 
-  const filteredPosts = selectedTag === 'ALL'
+  const filteredPosts = selectedTag === 'TODAS'
     ? allPosts
     : allPosts.filter(p => p.tags && p.tags.includes(selectedTag));
 
@@ -27,25 +27,25 @@ export const NewsFeed = () => {
     <section id="feed" className="py-20 bg-neutral-950/40 border-t border-neutral-800/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header */}
+        {/* Encabezado de la Sección */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono uppercase text-purple-400 mb-2">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase text-purple-400 mb-2">
               <Radio className="w-4 h-4 animate-pulse" />
-              <span>Collective Drops & Newsfeed</span>
+              <span>Novedades y Lanzamientos</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-              Updates & Log
+              Bitácora del Colectivo
             </h2>
           </div>
 
-          {/* Tag Filter */}
+          {/* Filtro por Etiquetas */}
           <div className="flex flex-wrap gap-2">
             {allTags.map((tag, idx) => (
               <button
                 key={idx}
                 onClick={() => setSelectedTag(tag)}
-                className={`px-3 py-1 rounded-xl text-xs font-mono transition-all ${
+                className={`px-3 py-1 rounded-xl text-xs font-medium transition-all ${
                   selectedTag === tag
                     ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white shadow-lg font-bold'
                     : 'bg-neutral-900 border border-neutral-800 text-neutral-400 hover:text-white'
@@ -57,10 +57,10 @@ export const NewsFeed = () => {
           </div>
         </div>
 
-        {/* Feed List */}
+        {/* Lista de Publicaciones */}
         {filteredPosts.length === 0 ? (
-          <div className="text-center py-12 text-neutral-400 font-mono text-sm">
-            No updates posted under #{selectedTag} yet.
+          <div className="text-center py-12 text-neutral-400 text-sm">
+            No hay publicaciones bajo la etiqueta #{selectedTag} aún.
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -70,7 +70,7 @@ export const NewsFeed = () => {
                 className="p-6 rounded-3xl bg-neutral-900/60 border border-neutral-800/80 backdrop-blur-xl hover:border-neutral-700 transition-all shadow-xl space-y-4 flex flex-col justify-between"
               >
                 <div className="space-y-3">
-                  {/* Author Header */}
+                  {/* Encabezado del Autor */}
                   <div className="flex items-center gap-3 border-b border-neutral-800/80 pb-3">
                     <img
                       src={post.artistAvatar}
@@ -79,14 +79,14 @@ export const NewsFeed = () => {
                     />
                     <div>
                       <div className="text-sm font-bold text-white">{post.artistName}</div>
-                      <div className="text-xs text-neutral-400 font-mono">
+                      <div className="text-xs text-neutral-400">
                         @{post.artistHandle} • {post.artistRole}
                       </div>
                     </div>
                   </div>
 
-                  {/* Title & Media */}
-                  <h3 className="text-xl font-bold text-white group-hover:text-cyan-300">
+                  {/* Título y Arte */}
+                  <h3 className="text-xl font-bold text-white">
                     {post.title}
                   </h3>
 
@@ -103,8 +103,8 @@ export const NewsFeed = () => {
                   </p>
                 </div>
 
-                {/* Footer Meta */}
-                <div className="flex items-center justify-between pt-4 border-t border-neutral-800/60 text-xs text-neutral-400 font-mono">
+                {/* Pie de Publicación */}
+                <div className="flex items-center justify-between pt-4 border-t border-neutral-800/60 text-xs text-neutral-400">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-cyan-400" />
                     {post.createdAt}

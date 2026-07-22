@@ -11,10 +11,10 @@ export const ArtistModal = ({ artist, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
       
-      {/* Modal Card */}
+      {/* Tarjeta Modal */}
       <div className="relative w-full max-w-3xl my-8 bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl space-y-6">
         
-        {/* Close Button */}
+        {/* Botón de Cerrar */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-20 p-2 rounded-full bg-neutral-950/80 text-neutral-400 hover:text-white border border-neutral-800 transition-colors"
@@ -22,7 +22,7 @@ export const ArtistModal = ({ artist, onClose }) => {
           <X className="w-5 h-5" />
         </button>
 
-        {/* Cover Header */}
+        {/* Encabezado con Portada */}
         <div className="relative h-56 sm:h-72 w-full bg-neutral-950">
           <img
             src={artist.coverImage || artist.avatar}
@@ -34,12 +34,12 @@ export const ArtistModal = ({ artist, onClose }) => {
           {artist.isFounder && (
             <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-amber-500 text-neutral-950 font-extrabold text-xs px-3 py-1 rounded-full shadow-lg">
               <Star className="w-3.5 h-3.5 fill-current" />
-              <span>Collective Founder</span>
+              <span>Fundador del Colectivo</span>
             </div>
           )}
         </div>
 
-        {/* Profile Info Header */}
+        {/* Info del Artista */}
         <div className="px-6 sm:px-8 relative -mt-16 sm:-mt-20 z-10 flex flex-col sm:flex-row items-start sm:items-end gap-6 border-b border-neutral-800 pb-6">
           <img
             src={artist.avatar}
@@ -50,7 +50,7 @@ export const ArtistModal = ({ artist, onClose }) => {
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
               {artist.name}
             </h2>
-            <p className="text-sm text-cyan-400 font-mono font-medium">
+            <p className="text-sm text-cyan-400 font-medium">
               @{artist.handle} • <span className="text-purple-300">{artist.role}</span>
             </p>
 
@@ -66,20 +66,20 @@ export const ArtistModal = ({ artist, onClose }) => {
           </div>
         </div>
 
-        {/* Content Body */}
+        {/* Cuerpo del Perfil */}
         <div className="px-6 sm:px-8 space-y-8 pb-8">
           
-          {/* Biography */}
+          {/* Biografía */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase font-mono tracking-widest text-neutral-400">About the Artist</h3>
+            <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Sobre el Artista</h3>
             <p className="text-neutral-200 leading-relaxed text-sm sm:text-base whitespace-pre-line">
               {artist.bio}
             </p>
           </div>
 
-          {/* Social Channels */}
+          {/* Redes Sociales y Plataformas */}
           <div className="space-y-3">
-            <h3 className="text-xs uppercase font-mono tracking-widest text-neutral-400">Official Channels & Streaming</h3>
+            <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Canales Oficiales & Streaming</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {artist.socialLinks?.map((link, idx) => (
                 <a
@@ -96,10 +96,10 @@ export const ArtistModal = ({ artist, onClose }) => {
             </div>
           </div>
 
-          {/* Tracks Discography */}
+          {/* Discografía / Muestras */}
           {artist.tracks && artist.tracks.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-xs uppercase font-mono tracking-widest text-neutral-400">Tracks & Sound Previews</h3>
+              <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Discografía y Muestras Sonoras</h3>
               <div className="space-y-2">
                 {artist.tracks.map((track) => {
                   const isTrackPlaying = currentPlayingTrack?.id === track.id && isPlaying;
@@ -121,7 +121,7 @@ export const ArtistModal = ({ artist, onClose }) => {
                         </button>
                         <div>
                           <div className="text-sm font-semibold text-white">{track.title}</div>
-                          <div className="text-xs text-neutral-400 font-mono">
+                          <div className="text-xs text-neutral-400 font-medium">
                             {track.genre} • {track.duration}
                           </div>
                         </div>
@@ -158,14 +158,14 @@ export const ArtistModal = ({ artist, onClose }) => {
             </div>
           )}
 
-          {/* Artist Posts / Updates */}
+          {/* Publicaciones */}
           {artist.posts && artist.posts.length > 0 && (
             <div className="space-y-3 pt-4 border-t border-neutral-800">
-              <h3 className="text-xs uppercase font-mono tracking-widest text-neutral-400">Latest Updates</h3>
+              <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Últimas Novedades</h3>
               <div className="space-y-3">
                 {artist.posts.map((post) => (
                   <div key={post.id} className="p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800/80 space-y-2">
-                    <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
+                    <div className="flex items-center justify-between text-xs text-neutral-400">
                       <span className="font-semibold text-purple-300">{post.title}</span>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
@@ -178,7 +178,7 @@ export const ArtistModal = ({ artist, onClose }) => {
                     {post.tags && (
                       <div className="flex flex-wrap gap-1">
                         {post.tags.map((tag, i) => (
-                          <span key={i} className="text-[10px] text-cyan-400 font-mono">
+                          <span key={i} className="text-[10px] text-cyan-400 font-medium">
                             #{tag}
                           </span>
                         ))}

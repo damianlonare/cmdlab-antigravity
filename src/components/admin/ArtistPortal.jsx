@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGraphQL } from '../../graphql/GraphQLContext';
-import { UserCheck, Music, FileText, Plus, Trash2, Check, Disc, ExternalLink, Globe } from 'lucide-react';
-
+import { UserCheck, Music, FileText, Trash2, Check } from 'lucide-react';
 
 export const ArtistPortal = () => {
   const { session, artists, executeMutation } = useGraphQL();
@@ -9,7 +8,7 @@ export const ArtistPortal = () => {
 
   const [activeTab, setActiveTab] = useState('PROFILE'); // 'PROFILE', 'TRACKS', 'POSTS'
 
-  // Profile Form State
+  // Formulario del Perfil
   const [profileForm, setProfileForm] = useState({
     name: '',
     handle: '',
@@ -22,7 +21,7 @@ export const ArtistPortal = () => {
   });
   const [profileSaved, setProfileSaved] = useState(false);
 
-  // New Track Form State
+  // Formulario de Nueva Canción
   const [trackForm, setTrackForm] = useState({
     title: '',
     duration: '',
@@ -34,7 +33,7 @@ export const ArtistPortal = () => {
   });
   const [trackSuccess, setTrackSuccess] = useState(false);
 
-  // New Post Form State
+  // Formulario de Nueva Publicación
   const [postForm, setPostForm] = useState({
     title: '',
     content: '',
@@ -43,7 +42,7 @@ export const ArtistPortal = () => {
   });
   const [postSuccess, setPostSuccess] = useState(false);
 
-  // New Social Link item state
+  // Estado para nuevo enlace social
   const [newSocial, setNewSocial] = useState({ platform: 'Spotify', url: '', label: '' });
 
   useEffect(() => {
@@ -123,7 +122,7 @@ export const ArtistPortal = () => {
     <div className="bg-neutral-950 min-h-screen py-10 px-4 sm:px-6 lg:px-8 border-t border-neutral-800">
       <div className="max-w-5xl mx-auto space-y-8">
         
-        {/* Banner */}
+        {/* Banner del Perfil */}
         <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <img
@@ -134,15 +133,15 @@ export const ArtistPortal = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-extrabold text-white">{activeArtist.name}</h1>
-                <span className="text-xs text-cyan-400 font-mono">@{activeArtist.handle}</span>
+                <span className="text-xs text-cyan-400 font-medium">@{activeArtist.handle}</span>
               </div>
-              <p className="text-xs text-neutral-400 font-mono">
-                Artist Self-Service Portal • {activeArtist.role}
+              <p className="text-xs text-neutral-400 font-medium">
+                Panel Personal del Artista • {activeArtist.role}
               </p>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
+          {/* Pestañas del Artista */}
           <div className="flex items-center gap-2 bg-neutral-950 p-1.5 rounded-2xl border border-neutral-800">
             <button
               onClick={() => setActiveTab('PROFILE')}
@@ -153,7 +152,7 @@ export const ArtistPortal = () => {
               }`}
             >
               <UserCheck className="w-4 h-4" />
-              <span>Edit Profile & Socials</span>
+              <span>Perfil y Redes</span>
             </button>
             <button
               onClick={() => setActiveTab('TRACKS')}
@@ -164,7 +163,7 @@ export const ArtistPortal = () => {
               }`}
             >
               <Music className="w-4 h-4" />
-              <span>Tracks ({activeArtist.tracks?.length || 0})</span>
+              <span>Muestras ({activeArtist.tracks?.length || 0})</span>
             </button>
             <button
               onClick={() => setActiveTab('POSTS')}
@@ -175,29 +174,29 @@ export const ArtistPortal = () => {
               }`}
             >
               <FileText className="w-4 h-4" />
-              <span>Posts ({activeArtist.posts?.length || 0})</span>
+              <span>Publicaciones ({activeArtist.posts?.length || 0})</span>
             </button>
           </div>
         </div>
 
-        {/* TAB 1: Profile & Socials */}
+        {/* PESTAÑA 1: Perfil y Redes */}
         {activeTab === 'PROFILE' && (
           <form onSubmit={handleProfileSubmit} className="space-y-6">
             
             <div className="p-6 rounded-3xl bg-neutral-900/80 border border-neutral-800 space-y-6">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
-                <h2 className="text-lg font-bold text-white">Artist Profile & Social Media Manager</h2>
+                <h2 className="text-lg font-bold text-white">Editar Información Personal y Redes Sociales</h2>
                 {profileSaved && (
-                  <span className="flex items-center gap-1 text-xs text-emerald-400 font-mono">
+                  <span className="flex items-center gap-1 text-xs text-emerald-400 font-medium">
                     <Check className="w-3.5 h-3.5" />
-                    <span>Saved!</span>
+                    <span>¡Perfil Guardado!</span>
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Artist Name</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Nombre Artístico</label>
                   <input
                     type="text"
                     value={profileForm.name}
@@ -206,7 +205,7 @@ export const ArtistPortal = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Handle / Username</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Usuario / Manejo</label>
                   <input
                     type="text"
                     value={profileForm.handle}
@@ -218,7 +217,7 @@ export const ArtistPortal = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Role / Tagline</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Especialidad / Rol</label>
                   <input
                     type="text"
                     value={profileForm.role}
@@ -227,7 +226,7 @@ export const ArtistPortal = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Genres (comma separated)</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Géneros (separados por coma)</label>
                   <input
                     type="text"
                     value={profileForm.genres}
@@ -239,7 +238,7 @@ export const ArtistPortal = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Avatar Image URL</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Imagen de Perfil (URL)</label>
                   <input
                     type="url"
                     value={profileForm.avatar}
@@ -248,7 +247,7 @@ export const ArtistPortal = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Cover Image URL</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Imagen de Portada (URL)</label>
                   <input
                     type="url"
                     value={profileForm.coverImage}
@@ -259,7 +258,7 @@ export const ArtistPortal = () => {
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-400 block mb-1">Artist Bio</label>
+                <label className="text-xs font-medium text-neutral-400 block mb-1">Biografía del Artista</label>
                 <textarea
                   rows={4}
                   value={profileForm.bio}
@@ -268,16 +267,15 @@ export const ArtistPortal = () => {
                 />
               </div>
 
-              {/* Social Media Links Manager */}
+              {/* Gestión de Enlaces Sociales */}
               <div className="pt-4 border-t border-neutral-800 space-y-4">
-                <h3 className="text-sm font-bold text-white">Social Media & Streaming Platforms</h3>
+                <h3 className="text-sm font-bold text-white">Redes Sociales y Enlaces de Streaming</h3>
                 
-                {/* List of current social links */}
                 <div className="space-y-2">
                   {profileForm.socialLinks.map((link, idx) => (
                     <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-neutral-950 border border-neutral-800 text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-cyan-400 font-mono">{link.platform}:</span>
+                        <span className="font-bold text-cyan-400">{link.platform}:</span>
                         <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-neutral-300 hover:underline truncate max-w-xs sm:max-w-md">
                           {link.url}
                         </a>
@@ -293,7 +291,6 @@ export const ArtistPortal = () => {
                   ))}
                 </div>
 
-                {/* Add Social Link controls */}
                 <div className="flex flex-col sm:flex-row gap-2 pt-2">
                   <select
                     value={newSocial.platform}
@@ -303,7 +300,7 @@ export const ArtistPortal = () => {
                     <option value="Spotify">Spotify</option>
                     <option value="Apple Music">Apple Music</option>
                     <option value="YouTube">YouTube</option>
-                    <option value="YouTube Channel">YouTube Channel</option>
+                    <option value="YouTube Channel">Canal de YouTube</option>
                     <option value="Instagram">Instagram</option>
                     <option value="Facebook">Facebook</option>
                     <option value="SoundCloud">SoundCloud</option>
@@ -313,7 +310,7 @@ export const ArtistPortal = () => {
 
                   <input
                     type="url"
-                    placeholder="Platform URL (https://...)"
+                    placeholder="URL de la plataforma (https://...)"
                     value={newSocial.url}
                     onChange={(e) => setNewSocial({ ...newSocial, url: e.target.value })}
                     className="flex-1 bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -321,7 +318,7 @@ export const ArtistPortal = () => {
 
                   <input
                     type="text"
-                    placeholder="Label (optional)"
+                    placeholder="Etiqueta opcional"
                     value={newSocial.label}
                     onChange={(e) => setNewSocial({ ...newSocial, label: e.target.value })}
                     className="bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -332,7 +329,7 @@ export const ArtistPortal = () => {
                     onClick={handleAddSocial}
                     className="px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white rounded-xl text-xs font-semibold"
                   >
-                    + Add Link
+                    + Añadir Enlace
                   </button>
                 </div>
 
@@ -343,7 +340,7 @@ export const ArtistPortal = () => {
                   type="submit"
                   className="px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-lg transition-colors"
                 >
-                  Save Profile Changes
+                  Guardar Cambios de Perfil
                 </button>
               </div>
 
@@ -351,45 +348,45 @@ export const ArtistPortal = () => {
           </form>
         )}
 
-        {/* TAB 2: Publish Tracks */}
+        {/* PESTAÑA 2: Muestras de Música */}
         {activeTab === 'TRACKS' && (
           <div className="space-y-6">
             <form onSubmit={handleAddTrack} className="p-6 rounded-3xl bg-neutral-900/80 border border-neutral-800 space-y-4">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <Music className="w-5 h-5 text-purple-400" />
-                  <span>Publish New Track / Release</span>
+                  <span>Publicar Nueva Muestra o Lanzamiento</span>
                 </h2>
-                {trackSuccess && <span className="text-xs text-emerald-400 font-mono">✓ Track Released!</span>}
+                {trackSuccess && <span className="text-xs text-emerald-400 font-medium">✓ ¡Muestra Publicada!</span>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Track Title *</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Título de la Canción *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Track Title"
+                    placeholder="Título de la pista"
                     value={trackForm.title}
                     onChange={(e) => setTrackForm({ ...trackForm, title: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Genre</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Género</label>
                   <input
                     type="text"
-                    placeholder="e.g. Ambient / Synthwave"
+                    placeholder="ej. Ambient / Synthwave"
                     value={trackForm.genre}
                     onChange={(e) => setTrackForm({ ...trackForm, genre: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Duration</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Duración</label>
                   <input
                     type="text"
-                    placeholder="e.g. 3:45"
+                    placeholder="ej. 3:45"
                     value={trackForm.duration}
                     onChange={(e) => setTrackForm({ ...trackForm, duration: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -398,11 +395,11 @@ export const ArtistPortal = () => {
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-400 block mb-1">Audio MP3 URL *</label>
+                <label className="text-xs font-medium text-neutral-400 block mb-1">URL del Archivo de Audio (MP3) *</label>
                 <input
                   type="url"
                   required
-                  placeholder="https://... audio preview stream"
+                  placeholder="https://... enlace de audio"
                   value={trackForm.audioUrl}
                   onChange={(e) => setTrackForm({ ...trackForm, audioUrl: e.target.value })}
                   className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -411,7 +408,7 @@ export const ArtistPortal = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Spotify Release Link</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Enlace a Spotify</label>
                   <input
                     type="url"
                     placeholder="https://open.spotify.com/..."
@@ -421,7 +418,7 @@ export const ArtistPortal = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Apple Music Link</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Enlace a Apple Music</label>
                   <input
                     type="url"
                     placeholder="https://music.apple.com/..."
@@ -437,31 +434,31 @@ export const ArtistPortal = () => {
                   type="submit"
                   className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition-colors"
                 >
-                  Publish Track
+                  Publicar Canción
                 </button>
               </div>
             </form>
           </div>
         )}
 
-        {/* TAB 3: Publish Posts */}
+        {/* PESTAÑA 3: Publicaciones */}
         {activeTab === 'POSTS' && (
           <div className="space-y-6">
             <form onSubmit={handleAddPost} className="p-6 rounded-3xl bg-neutral-900/80 border border-neutral-800 space-y-4">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <FileText className="w-5 h-5 text-cyan-400" />
-                  <span>Create Artist Update / Post</span>
+                  <span>Publicar Novedad o Actualización</span>
                 </h2>
-                {postSuccess && <span className="text-xs text-emerald-400 font-mono">✓ Post Published!</span>}
+                {postSuccess && <span className="text-xs text-emerald-400 font-medium">✓ ¡Publicación Compartida!</span>}
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-400 block mb-1">Post Title *</label>
+                <label className="text-xs font-medium text-neutral-400 block mb-1">Título de la Publicación *</label>
                 <input
                   type="text"
                   required
-                  placeholder="Title of post or announcement"
+                  placeholder="Título del anuncio o nota"
                   value={postForm.title}
                   onChange={(e) => setPostForm({ ...postForm, title: e.target.value })}
                   className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -469,11 +466,11 @@ export const ArtistPortal = () => {
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-400 block mb-1">Post Content *</label>
+                <label className="text-xs font-medium text-neutral-400 block mb-1">Contenido de la Publicación *</label>
                 <textarea
                   rows={4}
                   required
-                  placeholder="Share updates with the collective..."
+                  placeholder="Comparte novedades con la comunidad y el colectivo..."
                   value={postForm.content}
                   onChange={(e) => setPostForm({ ...postForm, content: e.target.value })}
                   className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-white text-xs"
@@ -482,17 +479,17 @@ export const ArtistPortal = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Tags (comma separated)</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Etiquetas (separadas por coma)</label>
                   <input
                     type="text"
-                    placeholder="e.g. Studio, Drop, Session"
+                    placeholder="ej. Estudio, Lanzamiento, Sesión"
                     value={postForm.tags}
                     onChange={(e) => setPostForm({ ...postForm, tags: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Media / Artwork URL</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Imagen o Arte (URL)</label>
                   <input
                     type="url"
                     placeholder="https://..."
@@ -508,7 +505,7 @@ export const ArtistPortal = () => {
                   type="submit"
                   className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold transition-colors"
                 >
-                  Publish Update
+                  Publicar Novedad
                 </button>
               </div>
             </form>

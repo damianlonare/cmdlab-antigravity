@@ -14,10 +14,10 @@ const MainContent = () => {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col justify-between">
       
-      {/* Top Header Navbar */}
+      {/* Navegación Superior */}
       <Navbar />
 
-      {/* Main Body depending on Active Session Mode */}
+      {/* Cuerpo Principal según el Modo Activo */}
       <main className="flex-1 pb-24">
         {session.role === 'VISITOR' && (
           <>
@@ -36,13 +36,13 @@ const MainContent = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-neutral-950 border-t border-neutral-800/80 py-10 font-mono text-xs text-neutral-400">
+      {/* Pie de Página */}
+      <footer className="bg-neutral-950 border-t border-neutral-800/80 py-10 font-medium text-xs text-neutral-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
             <span className="font-bold text-white tracking-widest">{siteSettings.siteName}</span>
             <span>•</span>
-            <span>Art Collective & Music Laboratory</span>
+            <span>Colectivo Artístico & Laboratorio de Música</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -59,13 +59,13 @@ const MainContent = () => {
             ))}
           </div>
 
-          <div className="text-neutral-300 flex items-center gap-1">
-            <span>Built for CMD Lab</span>
+          <div className="text-neutral-300">
+            <span>Creado para CMD Lab</span>
           </div>
         </div>
       </footer>
 
-      {/* Global Persistent Audio Player */}
+      {/* Reproductor de Audio Global */}
       <AudioPlayerBar />
 
     </div>

@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { useGraphQL } from '../../graphql/GraphQLContext';
-import { Palette, UserPlus, Shield, Sparkles, Check, Trash2, Edit3, Plus, Globe } from 'lucide-react';
-
+import { Palette, UserPlus, Shield, Check, Trash2 } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const { siteSettings, artists, executeMutation } = useGraphQL();
 
   const [activeTab, setActiveTab] = useState('THEME'); // 'THEME', 'ARTISTS'
 
-  // Theme Form State
+  // Estado del Formulario de Tema
   const [themeForm, setThemeForm] = useState({
     siteName: siteSettings.siteName || 'CMD Lab',
     slogan: siteSettings.slogan || '',
@@ -20,7 +19,7 @@ export const AdminDashboard = () => {
   });
   const [themeSaved, setThemeSaved] = useState(false);
 
-  // New Artist Form State
+  // Estado del Formulario de Nuevo Artista
   const [artistForm, setArtistForm] = useState({
     name: '',
     handle: '',
@@ -56,7 +55,7 @@ export const AdminDashboard = () => {
   };
 
   const handleDeleteArtist = (artistId, artistName) => {
-    if (confirm(`Are you sure you want to delete artist profile "${artistName}"?`)) {
+    if (confirm(`¿Estás seguro de eliminar el perfil del artista "${artistName}"?`)) {
       executeMutation('deleteArtist', { id: artistId });
     }
   };
@@ -65,26 +64,21 @@ export const AdminDashboard = () => {
     <div className="bg-neutral-950 min-h-screen py-10 px-4 sm:px-6 lg:px-8 border-t border-neutral-800">
       <div className="max-w-6xl mx-auto space-y-8">
         
-        {/* Banner */}
+        {/* Banner Superior */}
         <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-950/80 via-neutral-900 to-cyan-950/80 border border-purple-800/60 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-3 rounded-2xl bg-purple-900/60 border border-purple-700 text-purple-200">
               <Shield className="w-6 h-6" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-extrabold text-white">Super Admin CMS Studio</h1>
-                <span className="text-[10px] font-mono uppercase bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded border border-purple-600/40">
-                  GraphQL Powered
-                </span>
-              </div>
+              <h1 className="text-2xl font-extrabold text-white">Estudio de Administración General</h1>
               <p className="text-xs text-neutral-300">
-                Personalize site branding, theme colors, slogan, and manage all artist user profiles.
+                Personaliza la estética, los colores del sitio, los mensajes del colectivo y crea cuentas para nuevos artistas.
               </p>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
+          {/* Pestañas de Navegación del Admin */}
           <div className="flex items-center gap-2 bg-neutral-900 p-1.5 rounded-2xl border border-neutral-800">
             <button
               onClick={() => setActiveTab('THEME')}
@@ -95,7 +89,7 @@ export const AdminDashboard = () => {
               }`}
             >
               <Palette className="w-4 h-4" />
-              <span>Theme & Branding</span>
+              <span>Estilo y Colores</span>
             </button>
             <button
               onClick={() => setActiveTab('ARTISTS')}
@@ -106,33 +100,33 @@ export const AdminDashboard = () => {
               }`}
             >
               <UserPlus className="w-4 h-4" />
-              <span>Artists & User Accounts ({artists.length})</span>
+              <span>Cuentas de Artistas ({artists.length})</span>
             </button>
           </div>
         </div>
 
-        {/* TAB 1: Theme Personalizer */}
+        {/* PESTAÑA 1: Estilo y Colores */}
         {activeTab === 'THEME' && (
           <form onSubmit={handleThemeSubmit} className="space-y-6">
             
-            {/* Color Palette customization */}
             <div className="p-6 rounded-3xl bg-neutral-900/80 border border-neutral-800 space-y-6">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-white">Theme & Palette Personalizer</h2>
-                  <p className="text-xs text-neutral-400">Live preview color accents across the collective app.</p>
+                  <h2 className="text-lg font-bold text-white">Personalización de Colores y Mensajes</h2>
+                  <p className="text-xs text-neutral-400">Modifica los tonos y frases principales del colectivo en tiempo real.</p>
                 </div>
                 {themeSaved && (
-                  <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-950/80 px-3 py-1 rounded-lg border border-emerald-800">
+                  <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-950/80 px-3 py-1 rounded-lg border border-emerald-800 font-medium">
                     <Check className="w-3.5 h-3.5" />
-                    <span>Theme Updated via GraphQL!</span>
+                    <span>¡Cambios Guardados Exitosamente!</span>
                   </span>
                 )}
               </div>
 
+              {/* Selector de Colores */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="text-xs font-mono text-neutral-300 block mb-2">Primary Accent Color</label>
+                  <label className="text-xs font-medium text-neutral-300 block mb-2">Color Principal de Acento</label>
                   <div className="flex items-center gap-3">
                     <input
                       type="color"
@@ -150,7 +144,7 @@ export const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono text-neutral-300 block mb-2">Secondary Accent Color</label>
+                  <label className="text-xs font-medium text-neutral-300 block mb-2">Color Secundario de Acento</label>
                   <div className="flex items-center gap-3">
                     <input
                       type="color"
@@ -168,7 +162,7 @@ export const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono text-neutral-300 block mb-2">Glow Accent Color</label>
+                  <label className="text-xs font-medium text-neutral-300 block mb-2">Color de Resplandor</label>
                   <div className="flex items-center gap-3">
                     <input
                       type="color"
@@ -186,10 +180,10 @@ export const AdminDashboard = () => {
                 </div>
               </div>
 
-              {/* Text Info */}
+              {/* Textos del Colectivo */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-neutral-800">
                 <div>
-                  <label className="text-xs font-mono text-neutral-300 block mb-2">Collective Name</label>
+                  <label className="text-xs font-medium text-neutral-300 block mb-2">Nombre del Colectivo</label>
                   <input
                     type="text"
                     value={themeForm.siteName}
@@ -199,7 +193,7 @@ export const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono text-neutral-300 block mb-2">Tagline / Slogan</label>
+                  <label className="text-xs font-medium text-neutral-300 block mb-2">Lema / Frase Principal</label>
                   <input
                     type="text"
                     value={themeForm.slogan}
@@ -210,18 +204,18 @@ export const AdminDashboard = () => {
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-300 block mb-2">Announcement Ticker Banner</label>
+                <label className="text-xs font-medium text-neutral-300 block mb-2">Banner de Anuncio Destacado</label>
                 <input
                   type="text"
                   value={themeForm.heroAnnouncement}
                   onChange={(e) => setThemeForm({ ...themeForm, heroAnnouncement: e.target.value })}
-                  placeholder="e.g. New release dropping this Friday!"
+                  placeholder="ej. ¡Nuevo álbum disponible este viernes!"
                   className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-4 py-2.5 text-white text-sm"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-300 block mb-2">Collective Manifesto / About Text</label>
+                <label className="text-xs font-medium text-neutral-300 block mb-2">Manifiesto o Presentación del Colectivo</label>
                 <textarea
                   rows={4}
                   value={themeForm.manifesto}
@@ -235,7 +229,7 @@ export const AdminDashboard = () => {
                   type="submit"
                   className="px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold text-sm hover:scale-105 transition-all shadow-lg"
                 >
-                  Save Theme Settings
+                  Guardar Ajustes de Estilo
                 </button>
               </div>
 
@@ -243,31 +237,31 @@ export const AdminDashboard = () => {
           </form>
         )}
 
-        {/* TAB 2: Artist Accounts & Management */}
+        {/* PESTAÑA 2: Cuentas de Artistas */}
         {activeTab === 'ARTISTS' && (
           <div className="space-y-8">
             
-            {/* Create Artist Form */}
+            {/* Formulario para Crear Artista */}
             <form onSubmit={handleCreateArtist} className="p-6 rounded-3xl bg-neutral-900/80 border border-neutral-800 space-y-4">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-cyan-400" />
-                  <span>Create Artist User Profile</span>
+                  <span>Crear Cuenta de Artista Integrante</span>
                 </h2>
                 {artistCreatedSuccess && (
-                  <span className="text-xs text-emerald-400 font-mono">
-                    ✓ Artist Created!
+                  <span className="text-xs text-emerald-400 font-medium">
+                    ✓ ¡Artista Creado Exitosamente!
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Artist Name *</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Nombre del Artista *</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Alex Beats"
+                    placeholder="ej. Mateo Sonidos"
                     value={artistForm.name}
                     onChange={(e) => setArtistForm({ ...artistForm, name: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -275,10 +269,10 @@ export const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Handle / Username</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Nombre de Usuario / Manejo</label>
                   <input
                     type="text"
-                    placeholder="e.g. alexbeats"
+                    placeholder="ej. mateosonidos"
                     value={artistForm.handle}
                     onChange={(e) => setArtistForm({ ...artistForm, handle: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -288,10 +282,10 @@ export const AdminDashboard = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Role / Specialization</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Especialidad / Rol</label>
                   <input
                     type="text"
-                    placeholder="e.g. Mixing Engineer & Producer"
+                    placeholder="ej. Productor & Mezclador"
                     value={artistForm.role}
                     onChange={(e) => setArtistForm({ ...artistForm, role: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -299,10 +293,10 @@ export const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="text-xs font-mono text-neutral-400 block mb-1">Genres (comma separated)</label>
+                  <label className="text-xs font-medium text-neutral-400 block mb-1">Géneros (separados por coma)</label>
                   <input
                     type="text"
-                    placeholder="e.g. Lo-Fi, Hip-Hop, Ambient"
+                    placeholder="ej. Lo-Fi, Hip-Hop, Ambient"
                     value={artistForm.genres}
                     onChange={(e) => setArtistForm({ ...artistForm, genres: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-xl px-3 py-2 text-white text-xs"
@@ -311,7 +305,7 @@ export const AdminDashboard = () => {
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-400 block mb-1">Avatar Image URL</label>
+                <label className="text-xs font-medium text-neutral-400 block mb-1">Imagen de Perfil (URL)</label>
                 <input
                   type="url"
                   placeholder="https://..."
@@ -322,10 +316,10 @@ export const AdminDashboard = () => {
               </div>
 
               <div>
-                <label className="text-xs font-mono text-neutral-400 block mb-1">Bio / Description</label>
+                <label className="text-xs font-medium text-neutral-400 block mb-1">Biografía / Presentación</label>
                 <textarea
                   rows={2}
-                  placeholder="Short introduction..."
+                  placeholder="Breve biografía del artista..."
                   value={artistForm.bio}
                   onChange={(e) => setArtistForm({ ...artistForm, bio: e.target.value })}
                   className="w-full bg-neutral-950 border border-neutral-800 rounded-xl p-3 text-white text-xs"
@@ -337,14 +331,14 @@ export const AdminDashboard = () => {
                   type="submit"
                   className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition-colors"
                 >
-                  Create Artist User Account
+                  Crear Cuenta de Artista
                 </button>
               </div>
             </form>
 
-            {/* List of Existing Artists */}
+            {/* Lista de Artistas Existentes */}
             <div className="p-6 rounded-3xl bg-neutral-900/80 border border-neutral-800 space-y-4">
-              <h2 className="text-lg font-bold text-white">Existing Artist Accounts</h2>
+              <h2 className="text-lg font-bold text-white">Artistas Registrados</h2>
               
               <div className="space-y-3">
                 {artists.map((artist) => (
@@ -362,12 +356,12 @@ export const AdminDashboard = () => {
                         <div className="text-sm font-bold text-white flex items-center gap-2">
                           <span>{artist.name}</span>
                           {artist.isFounder && (
-                            <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono">
-                              Founder
+                            <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-medium">
+                              Fundador
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-neutral-400 font-mono">
+                        <div className="text-xs text-neutral-400 font-medium">
                           @{artist.handle} • {artist.role}
                         </div>
                       </div>
@@ -377,7 +371,7 @@ export const AdminDashboard = () => {
                       <button
                         onClick={() => handleDeleteArtist(artist.id, artist.name)}
                         className="p-2 text-red-400 hover:text-red-300 hover:bg-red-950/40 rounded-xl border border-transparent hover:border-red-900 transition-all"
-                        title="Delete Artist"
+                        title="Eliminar Artista"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
