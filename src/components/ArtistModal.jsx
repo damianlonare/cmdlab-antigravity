@@ -9,7 +9,8 @@ export const ArtistModal = ({ artist, onClose }) => {
   if (!artist) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
+
       
       {/* Tarjeta Modal */}
       <div className="relative w-full max-w-3xl my-8 bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl space-y-6">

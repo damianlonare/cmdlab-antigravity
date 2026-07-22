@@ -28,7 +28,8 @@ export const VideoModal = ({ videoUrl, videoTitle, onClose }) => {
   const embedUrl = getEmbedUrl(videoUrl);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-950/90 backdrop-blur-2xl animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-neutral-950/90 backdrop-blur-2xl animate-in fade-in duration-200">
+
       
       {/* Modal Container */}
       <div className="relative w-full max-w-4xl bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl space-y-4">
