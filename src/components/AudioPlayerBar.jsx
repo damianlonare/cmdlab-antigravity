@@ -42,7 +42,8 @@ export const AudioPlayerBar = () => {
               {currentPlayingTrack.title}
             </div>
             <div className="text-xs text-neutral-400 font-mono truncate">
-              {currentPlayingTrack.artistName || 'CMD Lab Artist'} • {currentPlayingTrack.genre || 'Electronic'}
+              {currentPlayingTrack.artistName || 'Artista de CMD Lab'} • {currentPlayingTrack.genre || 'Electrónica'}
+
             </div>
           </div>
         </div>

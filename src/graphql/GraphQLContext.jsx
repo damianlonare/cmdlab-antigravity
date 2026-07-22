@@ -3,7 +3,8 @@ import { initialData } from './initialData';
 
 const GraphQLContext = createContext();
 
-const LOCAL_STORAGE_KEY = 'CMDLAB_ART_COLLECTIVE_STATE_V1';
+const LOCAL_STORAGE_KEY = 'CMDLAB_ART_COLLECTIVE_STATE_V2';
+
 
 export const GraphQLProvider = ({ children }) => {
   const [data, setData] = useState(() => {
@@ -77,12 +78,12 @@ export const GraphQLProvider = ({ children }) => {
         id: `artist-${Date.now()}`,
         name: variables.input.name,
         handle: variables.input.handle || variables.input.name.toLowerCase().replace(/\s+/g, ''),
-        role: variables.input.role || 'Member Artist',
+        role: variables.input.role || 'Integrante del Colectivo',
         bio: variables.input.bio || '',
         avatar: variables.input.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=500&auto=format&fit=crop&q=80',
         coverImage: variables.input.coverImage || 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&auto=format&fit=crop&q=80',
         isFounder: false,
-        genres: variables.input.genres || ['Music'],
+        genres: variables.input.genres || ['Música'],
         socialLinks: variables.input.socialLinks || [],
         tracks: [],
         posts: []
@@ -134,7 +135,7 @@ export const GraphQLProvider = ({ children }) => {
           id: `track-${Date.now()}`,
           title: variables.input.title,
           duration: variables.input.duration || '3:30',
-          genre: variables.input.genre || 'Electronic',
+          genre: variables.input.genre || 'Electrónica',
           releaseDate: new Date().toISOString().split('T')[0],
           audioUrl: variables.input.audioUrl,
           coverUrl: variables.input.coverUrl || newData.artists[artistIndex].avatar,
