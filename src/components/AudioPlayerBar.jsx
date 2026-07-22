@@ -1,11 +1,13 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
-import { Play, Pause, Volume2, VolumeX, Music, Disc } from 'lucide-react';
+import { WaveformVisualizer } from './WaveformVisualizer';
+import { Play, Pause, Volume2, VolumeX, Disc, Music, Sparkles } from 'lucide-react';
 
 export const AudioPlayerBar = () => {
-  const { currentPlayingTrack, isPlaying, setIsPlaying } = useGraphQL();
+  const { currentPlayingTrack, isPlaying, setIsPlaying, siteSettings } = useGraphQL();
   const audioRef = useRef(null);
-  const [muted, setMuted] = React.useState(false);
+  const [muted, setMuted] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -17,6 +19,14 @@ export const AudioPlayerBar = () => {
     }
   }, [isPlaying, currentPlayingTrack]);
 
+  const handleTimeUpdate = () => {
+    if (audioRef.current && audioRef.current.duration) {
+      const current = audioRef.current.currentTime;
+      const total = audioRef.current.duration;
+      setProgress((current / total) * 100);
+    }
+  };
+
   if (!currentPlayingTrack) return null;
 
   return (
@@ -25,12 +35,21 @@ export const AudioPlayerBar = () => {
       <audio
         ref={audioRef}
         src={currentPlayingTrack.audioUrl}
+        onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
       />
 
+      {/* Progress Bar Top Edge */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-neutral-900">
+        <div
+          className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] transition-all duration-200"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         
-        {/* Track Info */}
+        {/* Track Details */}
         <div className="flex items-center gap-3 min-w-0">
           <img
             src={currentPlayingTrack.coverUrl || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=200&auto=format&fit=crop&q=80'}
@@ -38,17 +57,16 @@ export const AudioPlayerBar = () => {
             className={`w-12 h-12 rounded-xl object-cover border border-neutral-800 shadow-md ${isPlaying ? 'animate-spin-slow' : ''}`}
           />
           <div className="min-w-0">
-            <div className="text-sm font-bold text-white truncate">
-              {currentPlayingTrack.title}
+            <div className="text-sm font-bold text-white truncate flex items-center gap-2">
+              <span>{currentPlayingTrack.title}</span>
             </div>
             <div className="text-xs text-neutral-400 font-mono truncate">
               {currentPlayingTrack.artistName || 'Artista de CMD Lab'} • {currentPlayingTrack.genre || 'Electrónica'}
-
             </div>
           </div>
         </div>
 
-        {/* Playback Controls */}
+        {/* Center: Waveform Visualizer & Play Button */}
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
@@ -60,18 +78,26 @@ export const AudioPlayerBar = () => {
               <Play className="w-5 h-5 fill-current ml-0.5" />
             )}
           </button>
+
+          <div className="hidden md:block">
+            <WaveformVisualizer
+              isPlaying={isPlaying}
+              primaryColor={siteSettings.primaryColor || '#8b5cf6'}
+              secondaryColor={siteSettings.secondaryColor || '#06b6d4'}
+            />
+          </div>
         </div>
 
-        {/* External Links & Volume */}
+        {/* Right: External Streaming & Volume */}
         <div className="hidden sm:flex items-center gap-3">
           {currentPlayingTrack.spotifyUrl && (
             <a
               href={currentPlayingTrack.spotifyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-emerald-400 hover:text-emerald-300 font-mono flex items-center gap-1 bg-emerald-950/50 px-2.5 py-1 rounded-lg border border-emerald-900"
+              className="text-xs text-emerald-400 hover:text-emerald-300 font-mono flex items-center gap-1.5 bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-900 shadow-sm"
             >
-              <Disc className="w-3.5 h-3.5" />
+              <Disc className="w-4 h-4" />
               <span>Spotify</span>
             </a>
           )}

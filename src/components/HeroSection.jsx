@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
 import { SocialIcon } from './SocialIcon';
-import { Radio, Sparkles, Flame, Music, Disc, Volume2 } from 'lucide-react';
+import { VideoModal } from './VideoModal';
+import { Radio, Flame, Disc, Volume2, Play } from 'lucide-react';
 
 export const HeroSection = () => {
   const { siteSettings, artists } = useGraphQL();
+  const [activeVideo, setActiveVideo] = useState(null);
 
   const totalTracks = artists.reduce((acc, a) => acc + (a.tracks?.length || 0), 0);
 
@@ -73,7 +75,7 @@ export const HeroSection = () => {
             </div>
           </div>
 
-          {/* Tarjeta Visual Musical (Reemplaza la caja de código por arte sonoro) */}
+          {/* Tarjeta Visual Audiovisual */}
           <div className="lg:col-span-4">
             <div className="relative rounded-3xl p-6 bg-neutral-900/60 border border-neutral-800 backdrop-blur-2xl shadow-2xl space-y-6">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
@@ -84,32 +86,31 @@ export const HeroSection = () => {
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               </div>
 
-              {/* Equalizador Animado */}
-              <div className="bg-neutral-950/80 rounded-2xl p-5 border border-neutral-900 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Volume2 className="w-4 h-4 text-cyan-400" />
-                    <span className="text-xs font-bold text-white">Laboratorio Sonoro</span>
-                  </div>
-                  <span className="text-[10px] bg-purple-950 text-purple-300 px-2 py-0.5 rounded border border-purple-800 font-medium">
-                    En Vivo
-                  </span>
-                </div>
+              {/* Muestra Audiovisual Destacada */}
+              <div className="relative group rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-950 aspect-video flex items-center justify-center">
+                <img
+                  src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80"
+                  alt="CMD Lab Video Drop"
+                  className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent" />
 
-                {/* Barritasa de Audio Visual */}
-                <div className="flex items-end justify-between h-16 gap-1 px-2 pt-2">
-                  <div className="w-2 bg-purple-500 rounded-t h-12 animate-pulse" />
-                  <div className="w-2 bg-cyan-400 rounded-t h-8 animate-pulse" />
-                  <div className="w-2 bg-pink-500 rounded-t h-14 animate-pulse" />
-                  <div className="w-2 bg-purple-400 rounded-t h-6 animate-pulse" />
-                  <div className="w-2 bg-cyan-500 rounded-t h-16 animate-pulse" />
-                  <div className="w-2 bg-pink-400 rounded-t h-10 animate-pulse" />
-                  <div className="w-2 bg-purple-600 rounded-t h-14 animate-pulse" />
-                  <div className="w-2 bg-cyan-300 rounded-t h-7 animate-pulse" />
+                <button
+                  onClick={() => setActiveVideo({
+                    url: 'https://www.youtube.com/@cmd_lab',
+                    title: 'CMD Lab Art Collective - Canal Oficial'
+                  })}
+                  className="relative z-10 w-12 h-12 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
+                >
+                  <Play className="w-5 h-5 fill-current ml-0.5" />
+                </button>
+
+                <div className="absolute bottom-3 left-3 right-3 text-xs font-bold text-white truncate">
+                  ▶ Transmisión & Videos Oficiales
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-1 text-center">
+              <div className="grid grid-cols-2 gap-3 text-center">
                 <div className="p-3 bg-neutral-950/80 rounded-2xl border border-neutral-800">
                   <div className="text-2xl font-bold text-white">{artists.length}</div>
                   <div className="text-[11px] text-neutral-400 font-medium mt-0.5">Artistas</div>
@@ -125,6 +126,15 @@ export const HeroSection = () => {
         </div>
 
       </div>
+
+      {/* Video Modal Lightbox */}
+      {activeVideo && (
+        <VideoModal
+          videoUrl={activeVideo.url}
+          videoTitle={activeVideo.title}
+          onClose={() => setActiveVideo(null)}
+        />
+      )}
     </section>
   );
 };
