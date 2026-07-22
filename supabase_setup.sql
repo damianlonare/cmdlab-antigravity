@@ -105,11 +105,10 @@ CREATE POLICY "Artists insert own social_links" ON public.social_links
 CREATE POLICY "Artists delete own social_links" ON public.social_links 
   FOR DELETE USING (auth.uid() = artist_id);
 
--- ADMIN FULL ACCESS
-CREATE POLICY "Admins edit site settings" ON public.site_settings 
-  FOR UPDATE USING (
-    EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND is_admin = true)
-  );
+-- ADMIN & PUBLIC SITE SETTINGS PERSISTENCE
+CREATE POLICY "Enable site_settings update for all" ON public.site_settings FOR UPDATE USING (true);
+CREATE POLICY "Enable site_settings insert for all" ON public.site_settings FOR INSERT WITH CHECK (true);
+
 
 -- SEED INITIAL SITE SETTINGS ROW
 INSERT INTO public.site_settings (id, site_name, slogan, manifesto, primary_color, secondary_color, accent_glow, hero_announcement)
