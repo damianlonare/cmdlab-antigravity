@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
-import { Music, Shield, UserCheck, Eye, RefreshCw, Menu, X, Sparkles } from 'lucide-react';
+import { AuthModal } from './admin/AuthModal';
+import { supabase } from '../lib/supabase';
+import { Music, Shield, LogIn, LogOut, UserCheck, Menu, X } from 'lucide-react';
 
 export const Navbar = () => {
-  const { siteSettings, session, setSession, artists, resetToDefault } = useGraphQL();
+  const { siteSettings, session, setSession } = useGraphQL();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  const handleRoleChange = (e) => {
-    const role = e.target.value;
-    if (role === 'ARTIST') {
-      const lonare = artists.find(a => a.id === 'artist-lonare') || artists[0];
-      setSession({ role: 'ARTIST', artistId: lonare ? lonare.id : '' });
-    } else {
-      setSession({ ...session, role });
-    }
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(prev => ({
+      ...prev,
+      role: 'VISITOR',
+      authUser: null
+    }));
   };
 
-  const handleArtistSelect = (e) => {
-    setSession({ role: 'ARTIST', artistId: e.target.value });
+  const handleAuthSuccess = (user) => {
+    setSession(prev => ({
+      ...prev,
+      authUser: user,
+      role: 'ADMIN' // Switch to authenticated portal
+    }));
   };
 
   return (
@@ -53,52 +59,33 @@ export const Navbar = () => {
           <a href="#feed" className="hover:text-white transition-colors">Lanzamientos</a>
         </nav>
 
-        {/* Selector de Modo para el Usuario */}
+        {/* Botón de Acceso / Login de Producción */}
         <div className="hidden lg:flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-neutral-900/90 border border-neutral-800 rounded-xl px-3 py-1.5 shadow-inner">
-            <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium">
-              {session.role === 'VISITOR' && <Eye className="w-3.5 h-3.5 text-emerald-400" />}
-              {session.role === 'ADMIN' && <Shield className="w-3.5 h-3.5 text-purple-400" />}
-              {session.role === 'ARTIST' && <UserCheck className="w-3.5 h-3.5 text-cyan-400" />}
-              <span>Vista:</span>
-            </div>
+          {session.authUser ? (
+            <div className="flex items-center gap-3 bg-neutral-900 border border-neutral-800 rounded-xl px-3 py-1.5 shadow-md">
+              <div className="flex items-center gap-2 text-xs font-semibold text-purple-300">
+                <Shield className="w-4 h-4 text-purple-400" />
+                <span className="truncate max-w-[140px]">{session.authUser.email}</span>
+              </div>
 
-            <select
-              value={session.role}
-              onChange={handleRoleChange}
-              className="bg-transparent text-white text-xs font-semibold focus:outline-none cursor-pointer"
-            >
-              <option value="VISITOR" className="bg-neutral-900 text-white">Visitante Público</option>
-              <option value="ADMIN" className="bg-neutral-900 text-white">Administrador General</option>
-              <option value="ARTIST" className="bg-neutral-900 text-white">Panel de Artista</option>
-            </select>
-
-            {session.role === 'ARTIST' && (
-              <select
-                value={session.artistId}
-                onChange={handleArtistSelect}
-                className="bg-neutral-800 text-cyan-300 text-xs px-2 py-1 rounded border border-neutral-700 focus:outline-none cursor-pointer font-medium"
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1 text-xs text-neutral-400 hover:text-red-400 px-2 py-1 rounded-lg hover:bg-neutral-800 transition-colors"
+                title="Cerrar Sesión"
               >
-                {artists.map((artist) => (
-                  <option key={artist.id} value={artist.id} className="bg-neutral-900 text-white">
-                    {artist.name} {artist.isFounder ? '(Fundador)' : ''}
-                  </option>
-                ))}
-              </select>
-            )}
-          </div>
-
-          <button
-            onClick={() => {
-              if (confirm('¿Restablecer los ajustes del sitio y perfiles al contenido inicial?')) {
-                resetToDefault();
-              }
-            }}
-            title="Restablecer contenido inicial"
-            className="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-neutral-800/60 border border-transparent hover:border-neutral-700 transition-all"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Salir</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 hover:border-neutral-700 text-white text-xs font-semibold transition-all shadow-sm hover:scale-105"
+            >
+              <LogIn className="w-4 h-4 text-purple-400" />
+              <span>Acceso Artistas</span>
+            </button>
+          )}
         </div>
 
         {/* Menú Móvil */}
@@ -119,34 +106,37 @@ export const Navbar = () => {
             <a href="#feed" onClick={() => setMobileMenuOpen(false)} className="hover:text-white">Lanzamientos</a>
           </div>
 
-          <div className="pt-4 border-t border-neutral-800 space-y-3">
-            <label className="text-xs text-neutral-400 font-medium block">Seleccionar Modo:</label>
-            <select
-              value={session.role}
-              onChange={handleRoleChange}
-              className="w-full bg-neutral-900 border border-neutral-700 text-white text-sm p-2 rounded-lg"
-            >
-              <option value="VISITOR">Visitante Público</option>
-              <option value="ADMIN">Administrador General</option>
-              <option value="ARTIST">Panel de Artista</option>
-            </select>
-
-            {session.role === 'ARTIST' && (
-              <select
-                value={session.artistId}
-                onChange={handleArtistSelect}
-                className="w-full bg-neutral-900 border border-neutral-700 text-cyan-300 text-sm p-2 rounded-lg"
+          <div className="pt-4 border-t border-neutral-800">
+            {session.authUser ? (
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-neutral-900 border border-neutral-800 text-red-400 text-sm font-semibold"
               >
-                {artists.map((artist) => (
-                  <option key={artist.id} value={artist.id}>
-                    {artist.name} {artist.isFounder ? '(Fundador)' : ''}
-                  </option>
-                ))}
-              </select>
+                <LogOut className="w-4 h-4" />
+                <span>Cerrar Sesión ({session.authUser.email})</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setAuthModalOpen(true);
+                }}
+                className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-sm font-semibold shadow-lg"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Acceso Artistas</span>
+              </button>
             )}
           </div>
         </div>
       )}
+
+      {/* Modal de Autenticación */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
+      />
     </header>
   );
 };
