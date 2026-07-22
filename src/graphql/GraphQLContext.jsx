@@ -132,15 +132,20 @@ export const GraphQLProvider = ({ children }) => {
     }
   }, [data]);
 
-  // Apply dynamic CSS Variables
+  // Apply dynamic CSS Variables for full site color customization
   useEffect(() => {
     if (data.siteSettings) {
       const root = document.documentElement;
       root.style.setProperty('--color-primary', data.siteSettings.primaryColor || '#8b5cf6');
       root.style.setProperty('--color-secondary', data.siteSettings.secondaryColor || '#06b6d4');
       root.style.setProperty('--color-accent-glow', data.siteSettings.accentGlow || '#ec4899');
+      root.style.setProperty('--color-bg', data.siteSettings.bgColor || '#0a0a0a');
+      root.style.setProperty('--color-card-bg', data.siteSettings.cardBgColor || '#171717');
+      root.style.setProperty('--color-text-primary', data.siteSettings.textPrimaryColor || '#ffffff');
+      root.style.setProperty('--color-text-secondary', data.siteSettings.textSecondaryColor || '#a3a3a3');
     }
   }, [data.siteSettings]);
+
 
   const executeQuery = (queryName, variables = {}) => {
     switch (queryName) {

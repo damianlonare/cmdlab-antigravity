@@ -6,6 +6,10 @@ export const initialData = {
     primaryColor: "#8b5cf6", // Violeta
     secondaryColor: "#06b6d4", // Cían
     accentGlow: "#ec4899", // Rosa neón
+    bgColor: "#0a0a0a", // Fondo principal
+    cardBgColor: "#171717", // Fondo de tarjetas
+    textPrimaryColor: "#ffffff", // Texto principal
+    textSecondaryColor: "#a3a3a3", // Texto secundario
     themeMode: "dark",
     heroAnnouncement: "⚡ ¡El nuevo lanzamiento del colectivo CMD Lab ya está disponible!",
     groupSocials: [
