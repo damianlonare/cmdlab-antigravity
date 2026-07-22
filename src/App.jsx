@@ -12,7 +12,7 @@ const MainContent = () => {
   const { session, siteSettings } = useGraphQL();
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans selection:bg-purple-500 selection:text-white flex flex-col justify-between">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans flex flex-col justify-between">
       
       {/* Navegación Superior */}
       <Navbar />

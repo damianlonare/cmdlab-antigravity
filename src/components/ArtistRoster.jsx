@@ -77,7 +77,10 @@ export const ArtistRoster = () => {
                     </div>
 
                     {/* Rol */}
-                    <div className="text-xs font-semibold text-purple-400 mb-2 font-mono">
+                    <div 
+                      className="text-xs font-semibold mb-2 font-mono"
+                      style={{ color: `var(--color-primary)` }}
+                    >
                       {artist.role}
                     </div>
 
@@ -122,12 +125,15 @@ export const ArtistRoster = () => {
                       {featuredTrack ? (
                         <button
                           onClick={() => playTrack(featuredTrack, artist.name)}
-                          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-950/60 hover:bg-purple-900/80 border border-purple-800/80 text-purple-200 text-xs font-semibold transition-all"
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 text-white text-xs font-semibold transition-all shadow-sm"
+                          style={{
+                            borderColor: `var(--color-primary)`
+                          }}
                         >
                           {isTrackPlaying ? (
                             <Pause className="w-3.5 h-3.5 text-cyan-300 animate-pulse" />
                           ) : (
-                            <Play className="w-3.5 h-3.5 text-purple-300" />
+                            <Play className="w-3.5 h-3.5" style={{ color: `var(--color-primary)` }} />
                           )}
                           <span>{isTrackPlaying ? 'Pausar Muestra' : 'Escuchar Muestra'}</span>
                         </button>

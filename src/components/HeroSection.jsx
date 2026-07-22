@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
 import { SocialIcon } from './SocialIcon';
 import { VideoModal } from './VideoModal';
-import { Radio, Flame, Disc, Volume2, Play } from 'lucide-react';
+import { Radio, Flame, Disc, Play } from 'lucide-react';
 
 export const HeroSection = () => {
   const { siteSettings, artists } = useGraphQL();
@@ -35,7 +35,14 @@ export const HeroSection = () => {
           
           {/* Contenido Principal */}
           <div className="lg:col-span-8 space-y-6">
-            <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-semibold text-purple-400 bg-purple-950/40 px-3 py-1 rounded-md border border-purple-800/50">
+            <div 
+              className="inline-flex items-center gap-2 text-xs uppercase tracking-widest font-semibold px-3 py-1 rounded-md border"
+              style={{
+                color: `var(--color-primary)`,
+                borderColor: `var(--color-primary)`,
+                backgroundColor: `rgba(255, 255, 255, 0.05)`
+              }}
+            >
               <Radio className="w-3.5 h-3.5 animate-pulse" />
               <span>Colectivo Artístico CMD Lab</span>
             </div>
@@ -80,7 +87,7 @@ export const HeroSection = () => {
             <div className="relative rounded-3xl p-6 bg-neutral-900/60 border border-neutral-800 backdrop-blur-2xl shadow-2xl space-y-6">
               <div className="flex items-center justify-between border-b border-neutral-800 pb-3">
                 <div className="flex items-center gap-2 text-xs font-medium text-neutral-300">
-                  <Disc className="w-4 h-4 text-purple-400 animate-spin-slow" />
+                  <Disc className="w-4 h-4 animate-spin-slow" style={{ color: `var(--color-primary)` }} />
                   <span>Espacio Creativo CMD Lab</span>
                 </div>
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -100,7 +107,10 @@ export const HeroSection = () => {
                     url: 'https://www.youtube.com/@cmd_lab',
                     title: 'CMD Lab Art Collective - Canal Oficial'
                   })}
-                  className="relative z-10 w-12 h-12 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
+                  className="relative z-10 w-12 h-12 rounded-full text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110"
+                  style={{
+                    background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
+                  }}
                 >
                   <Play className="w-5 h-5 fill-current ml-0.5" />
                 </button>
