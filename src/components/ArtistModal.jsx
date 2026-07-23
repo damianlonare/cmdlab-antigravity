@@ -2,6 +2,8 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { useGraphQL } from '../graphql/GraphQLContext';
 import { SocialIcon } from './SocialIcon';
+import { CMDIsotype } from './brand/CMDIsotype';
+import { CMDWordmark } from './brand/CMDWordmark';
 import { X, Play, Pause, Disc, Music, Calendar, Star } from 'lucide-react';
 
 export const ArtistModal = ({ artist, onClose }) => {
@@ -10,7 +12,7 @@ export const ArtistModal = ({ artist, onClose }) => {
   if (!artist) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-neutral-950/80 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-neutral-950/85 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
       
       {/* Tarjeta Modal */}
       <div className="relative w-full max-w-3xl my-8 bg-neutral-900 border border-neutral-800 rounded-3xl overflow-hidden shadow-2xl space-y-6">
@@ -32,12 +34,17 @@ export const ArtistModal = ({ artist, onClose }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/30 to-transparent" />
 
-          {artist.isFounder && (
-            <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-amber-500 text-neutral-950 font-extrabold text-xs px-3 py-1 rounded-full shadow-lg">
-              <Star className="w-3.5 h-3.5 fill-current" />
-              <span>Fundador del Colectivo</span>
+          <div className="absolute top-4 left-4 flex items-center gap-2">
+            {artist.isFounder && (
+              <div className="flex items-center gap-1.5 bg-amber-500 text-neutral-950 font-mono font-extrabold text-xs px-3 py-1 rounded-md shadow-lg uppercase">
+                <Star className="w-3.5 h-3.5 fill-current" />
+                <span>Fundador CMD</span>
+              </div>
+            )}
+            <div className="w-7 h-7 rounded-lg bg-neutral-950/80 border border-neutral-700 p-1 flex items-center justify-center shadow-md">
+              <CMDIsotype className="w-full h-full text-white" />
             </div>
-          )}
+          </div>
         </div>
 
         {/* Info del Artista */}
@@ -48,18 +55,21 @@ export const ArtistModal = ({ artist, onClose }) => {
             className="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl border-4 border-neutral-900 object-cover shadow-2xl bg-neutral-950"
           />
           <div className="space-y-1 flex-1">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-              {artist.name}
-            </h2>
-            <p className="text-sm text-cyan-400 font-medium">
-              @{artist.handle} • <span className="text-purple-300">{artist.role}</span>
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl sm:text-3xl font-black text-white">
+                {artist.name}
+              </h2>
+              <CMDWordmark size="text-sm" />
+            </div>
+            <p className="text-xs font-mono font-bold text-orange-400">
+              @{artist.handle} • <span className="text-cyan-300">// {artist.role}</span>
             </p>
 
             {artist.genres && (
               <div className="flex flex-wrap gap-1.5 pt-2">
                 {artist.genres.map((g, idx) => (
-                  <span key={idx} className="px-2.5 py-0.5 text-xs rounded-full bg-neutral-800 text-neutral-300 border border-neutral-700">
-                    {g}
+                  <span key={idx} className="px-2.5 py-0.5 text-xs font-mono rounded-md bg-neutral-950 text-neutral-300 border border-neutral-800">
+                    #{g}
                   </span>
                 ))}
               </div>
@@ -72,7 +82,7 @@ export const ArtistModal = ({ artist, onClose }) => {
           
           {/* Biografía */}
           <div className="space-y-2">
-            <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Sobre el Artista</h3>
+            <h3 className="text-xs uppercase font-mono font-bold tracking-widest text-neutral-400">// Sobre el Artista</h3>
             <p className="text-neutral-200 leading-relaxed text-sm sm:text-base whitespace-pre-line">
               {artist.bio}
             </p>
@@ -80,7 +90,7 @@ export const ArtistModal = ({ artist, onClose }) => {
 
           {/* Redes Sociales y Plataformas */}
           <div className="space-y-3">
-            <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Canales Oficiales & Streaming</h3>
+            <h3 className="text-xs uppercase font-mono font-bold tracking-widest text-neutral-400">// Canales Oficiales & Streaming</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {artist.socialLinks?.map((link, idx) => (
                 <a
@@ -100,29 +110,29 @@ export const ArtistModal = ({ artist, onClose }) => {
           {/* Discografía / Muestras */}
           {artist.tracks && artist.tracks.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Discografía y Muestras Sonoras</h3>
+              <h3 className="text-xs uppercase font-mono font-bold tracking-widest text-neutral-400">// Discografía y Muestras Sonoras</h3>
               <div className="space-y-2">
                 {artist.tracks.map((track) => {
                   const isTrackPlaying = currentPlayingTrack?.id === track.id && isPlaying;
                   return (
                     <div
                       key={track.id}
-                      className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/80 border border-neutral-800/80 hover:border-neutral-700 transition-all"
+                      className="flex items-center justify-between p-3 rounded-2xl bg-neutral-950/80 border border-neutral-800 hover:border-neutral-700 transition-all"
                     >
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => playTrack(track, artist.name)}
-                          className="w-10 h-10 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-800 text-purple-200 flex items-center justify-center transition-colors"
+                          className="w-10 h-10 rounded-xl bg-white text-neutral-950 border border-orange-500 flex items-center justify-center transition-colors shadow-md"
                         >
                           {isTrackPlaying ? (
-                            <Pause className="w-4 h-4 text-cyan-300 animate-pulse" />
+                            <Pause className="w-4 h-4 text-orange-600 animate-pulse" />
                           ) : (
-                            <Play className="w-4 h-4" />
+                            <Play className="w-4 h-4 text-neutral-950 ml-0.5" />
                           )}
                         </button>
                         <div>
-                          <div className="text-sm font-semibold text-white">{track.title}</div>
-                          <div className="text-xs text-neutral-400 font-medium">
+                          <div className="text-sm font-bold text-white">{track.title}</div>
+                          <div className="text-xs text-neutral-400 font-mono">
                             {track.genre} • {track.duration}
                           </div>
                         </div>
@@ -134,7 +144,7 @@ export const ArtistModal = ({ artist, onClose }) => {
                             href={track.spotifyUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 rounded-lg bg-neutral-900 hover:bg-emerald-950 text-emerald-400 text-xs flex items-center gap-1 border border-neutral-800"
+                            className="p-2 rounded-lg bg-neutral-900 hover:bg-emerald-950 text-emerald-400 text-xs font-mono flex items-center gap-1 border border-neutral-800"
                           >
                             <Disc className="w-3.5 h-3.5" />
                             <span className="hidden sm:inline">Spotify</span>
@@ -145,7 +155,7 @@ export const ArtistModal = ({ artist, onClose }) => {
                             href={track.appleUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 rounded-lg bg-neutral-900 hover:bg-pink-950 text-pink-400 text-xs flex items-center gap-1 border border-neutral-800"
+                            className="p-2 rounded-lg bg-neutral-900 hover:bg-pink-950 text-pink-400 text-xs font-mono flex items-center gap-1 border border-neutral-800"
                           >
                             <Music className="w-3.5 h-3.5" />
                             <span className="hidden sm:inline">Apple Music</span>
@@ -162,14 +172,14 @@ export const ArtistModal = ({ artist, onClose }) => {
           {/* Publicaciones */}
           {artist.posts && artist.posts.length > 0 && (
             <div className="space-y-3 pt-4 border-t border-neutral-800">
-              <h3 className="text-xs uppercase font-medium tracking-widest text-neutral-400">Últimas Novedades</h3>
+              <h3 className="text-xs uppercase font-mono font-bold tracking-widest text-neutral-400">// Últimas Novedades</h3>
               <div className="space-y-3">
                 {artist.posts.map((post) => (
-                  <div key={post.id} className="p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800/80 space-y-2">
-                    <div className="flex items-center justify-between text-xs text-neutral-400">
-                      <span className="font-semibold text-purple-300">{post.title}</span>
+                  <div key={post.id} className="p-4 rounded-2xl bg-neutral-950/60 border border-neutral-800 space-y-2">
+                    <div className="flex items-center justify-between text-xs text-neutral-400 font-mono">
+                      <span className="font-bold text-orange-400">{post.title}</span>
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
+                        <Calendar className="w-3 h-3 text-cyan-400" />
                         {post.createdAt}
                       </span>
                     </div>
@@ -177,9 +187,9 @@ export const ArtistModal = ({ artist, onClose }) => {
                       {post.content}
                     </p>
                     {post.tags && (
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-1 font-mono text-[10px]">
                         {post.tags.map((tag, i) => (
-                          <span key={i} className="text-[10px] text-cyan-400 font-medium">
+                          <span key={i} className="text-cyan-400 font-medium">
                             #{tag}
                           </span>
                         ))}

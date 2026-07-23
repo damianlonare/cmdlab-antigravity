@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
 import { AuthModal } from './admin/AuthModal';
+import { CMDIsotype } from './brand/CMDIsotype';
+import { CMDWordmark } from './brand/CMDWordmark';
 import { supabase } from '../lib/supabase';
-import { Music, Shield, LogIn, LogOut, Menu, X, LayoutDashboard, Eye } from 'lucide-react';
+import { Shield, LogIn, LogOut, Menu, X, LayoutDashboard, Eye } from 'lucide-react';
 
 export const Navbar = () => {
   const { siteSettings, session, setSession } = useGraphQL();
@@ -22,7 +24,7 @@ export const Navbar = () => {
     setSession(prev => ({
       ...prev,
       authUser: user,
-      role: 'ADMIN' // Switch to authenticated admin studio
+      role: 'ADMIN'
     }));
   };
 
@@ -40,61 +42,60 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-neutral-950/85 border-b border-neutral-800/80 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-neutral-950/90 border-b border-neutral-800/80 transition-all duration-300 relative overflow-hidden">
+      {/* Subtle blueprint accent line at the very top */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-orange-500 via-cyan-500 to-purple-500" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between relative z-10">
         
-        {/* Logo del Colectivo */}
+        {/* Logo de la Marca: Isotipo CMD + Tag xCMDLABx */}
         <div 
           onClick={(e) => handleNavClick(e, 'manifesto')}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div 
-            className="w-10 h-10 rounded-xl p-0.5 shadow-lg transition-transform group-hover:scale-105"
-            style={{
-              background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
-            }}
-          >
-            <div className="w-full h-full bg-neutral-950 rounded-[10px] flex items-center justify-center">
-              <Music className="w-5 h-5 text-white" />
-            </div>
+          {/* Official CMD Isotype badge */}
+          <div className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-700/80 p-1.5 shadow-xl flex items-center justify-center transition-all group-hover:scale-105 group-hover:border-orange-500 group-hover:shadow-orange-500/20">
+            <CMDIsotype className="w-full h-full text-white" />
           </div>
-          <div>
+
+          <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-extrabold text-xl tracking-wider text-white">
-                {siteSettings.siteName}
-              </span>
-              <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-widest bg-neutral-800 text-neutral-300 rounded-full border border-neutral-700">
-                Colectivo
+              <CMDWordmark size="text-lg" />
+              <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-widest bg-orange-950/80 text-orange-400 rounded-md border border-orange-800/80">
+                Monterrey
               </span>
             </div>
-            <p className="text-xs text-neutral-400 font-medium hidden sm:block">
+            <p className="text-[11px] text-neutral-400 font-medium hidden sm:block">
               {siteSettings.slogan}
             </p>
           </div>
         </div>
 
         {/* Navegación Principal */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-neutral-300">
+        <nav className="hidden md:flex items-center gap-8 text-xs font-mono font-bold uppercase tracking-wider text-neutral-300">
           <a
             href="#manifesto"
             onClick={(e) => handleNavClick(e, 'manifesto')}
-            className="hover:text-white transition-colors"
+            className="hover:text-orange-400 transition-colors flex items-center gap-1"
           >
-            Manifiesto
+            <span className="text-orange-500 font-sans text-xs">//</span>
+            <span>Manifiesto</span>
           </a>
           <a
             href="#roster"
             onClick={(e) => handleNavClick(e, 'roster')}
-            className="hover:text-white transition-colors"
+            className="hover:text-cyan-400 transition-colors flex items-center gap-1"
           >
-            Artistas
+            <span className="text-cyan-500 font-sans text-xs">//</span>
+            <span>Artistas</span>
           </a>
           <a
             href="#feed"
             onClick={(e) => handleNavClick(e, 'feed')}
-            className="hover:text-white transition-colors"
+            className="hover:text-pink-400 transition-colors flex items-center gap-1"
           >
-            Lanzamientos
+            <span className="text-pink-500 font-sans text-xs">//</span>
+            <span>Lanzamientos</span>
           </a>
         </nav>
 
@@ -136,7 +137,7 @@ export const Navbar = () => {
           ) : (
             <button
               onClick={() => setAuthModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs font-bold transition-all shadow-md hover:scale-105"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-white text-xs font-mono font-bold uppercase tracking-wider transition-all shadow-md hover:scale-105 border border-orange-500/50"
               style={{
                 background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
               }}
@@ -159,27 +160,27 @@ export const Navbar = () => {
       {/* Menú Desplegable Móvil */}
       {mobileMenuOpen && (
         <div className="lg:hidden px-4 pt-2 pb-6 border-t border-neutral-800 bg-neutral-950/95 space-y-4">
-          <div className="flex flex-col space-y-3 font-medium text-neutral-300 text-sm">
+          <div className="flex flex-col space-y-3 font-mono font-bold text-neutral-300 text-xs uppercase tracking-wider">
             <a
               href="#manifesto"
               onClick={(e) => { setMobileMenuOpen(false); handleNavClick(e, 'manifesto'); }}
-              className="hover:text-white"
+              className="hover:text-orange-400"
             >
-              Manifiesto
+              // Manifiesto
             </a>
             <a
               href="#roster"
               onClick={(e) => { setMobileMenuOpen(false); handleNavClick(e, 'roster'); }}
-              className="hover:text-white"
+              className="hover:text-cyan-400"
             >
-              Artistas
+              // Artistas
             </a>
             <a
               href="#feed"
               onClick={(e) => { setMobileMenuOpen(false); handleNavClick(e, 'feed'); }}
-              className="hover:text-white"
+              className="hover:text-pink-400"
             >
-              Lanzamientos
+              // Lanzamientos
             </a>
           </div>
 
@@ -210,7 +211,7 @@ export const Navbar = () => {
                   setMobileMenuOpen(false);
                   setAuthModalOpen(true);
                 }}
-                className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl text-white text-sm font-semibold shadow-lg"
+                className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl text-white text-xs font-mono font-bold uppercase tracking-wider shadow-lg"
                 style={{
                   background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
                 }}

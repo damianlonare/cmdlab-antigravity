@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useGraphQL } from '../graphql/GraphQLContext';
 import { WaveformVisualizer } from './WaveformVisualizer';
-import { Play, Pause, Volume2, VolumeX, Disc, Music, Sparkles } from 'lucide-react';
+import { CMDIsotype } from './brand/CMDIsotype';
+import { Play, Pause, Volume2, VolumeX, Disc } from 'lucide-react';
 
 export const AudioPlayerBar = () => {
   const { currentPlayingTrack, isPlaying, setIsPlaying, siteSettings } = useGraphQL();
@@ -39,23 +40,28 @@ export const AudioPlayerBar = () => {
         onEnded={() => setIsPlaying(false)}
       />
 
-      {/* Progress Bar Top Edge */}
+      {/* Progress Bar Top Edge with Blueprint Orange Glow */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-neutral-900">
         <div
-          className="h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] transition-all duration-200"
+          className="h-full bg-gradient-to-r from-orange-500 via-cyan-400 to-purple-500 transition-all duration-200"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         
-        {/* Track Details */}
+        {/* Track Details with Official CMD Badge */}
         <div className="flex items-center gap-3 min-w-0">
-          <img
-            src={currentPlayingTrack.coverUrl || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=200&auto=format&fit=crop&q=80'}
-            alt={currentPlayingTrack.title}
-            className={`w-12 h-12 rounded-xl object-cover border border-neutral-800 shadow-md ${isPlaying ? 'animate-spin-slow' : ''}`}
-          />
+          <div className="relative">
+            <img
+              src={currentPlayingTrack.coverUrl || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=200&auto=format&fit=crop&q=80'}
+              alt={currentPlayingTrack.title}
+              className={`w-12 h-12 rounded-xl object-cover border border-neutral-800 shadow-md ${isPlaying ? 'animate-spin-slow' : ''}`}
+            />
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-md bg-neutral-950 border border-neutral-700 p-0.5 shadow-md flex items-center justify-center">
+              <CMDIsotype className="w-full h-full text-white" />
+            </div>
+          </div>
           <div className="min-w-0">
             <div className="text-sm font-bold text-white truncate flex items-center gap-2">
               <span>{currentPlayingTrack.title}</span>
@@ -70,7 +76,7 @@ export const AudioPlayerBar = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="w-11 h-11 rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white flex items-center justify-center shadow-lg shadow-[var(--color-primary)]/30 hover:scale-105 transition-all"
+            className="w-11 h-11 rounded-xl bg-white text-neutral-950 flex items-center justify-center shadow-lg border-2 border-orange-500 hover:scale-105 transition-all"
           >
             {isPlaying ? (
               <Pause className="w-5 h-5 fill-current" />

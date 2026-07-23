@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useGraphQL } from '../../graphql/GraphQLContext';
-import { Palette, UserPlus, Shield, Check, Trash2, Sparkles, Wand2 } from 'lucide-react';
+import { CMDIsotype } from '../brand/CMDIsotype';
+import { CMDWordmark } from '../brand/CMDWordmark';
+import { Palette, UserPlus, Shield, Check, Trash2, Wand2 } from 'lucide-react';
 
 export const AdminDashboard = () => {
   const { siteSettings, artists, executeMutation } = useGraphQL();
@@ -15,10 +17,10 @@ export const AdminDashboard = () => {
     primaryColor: siteSettings.primaryColor || '#8b5cf6',
     secondaryColor: siteSettings.secondaryColor || '#06b6d4',
     accentGlow: siteSettings.accentGlow || '#ec4899',
-    bgColor: siteSettings.bgColor || '#0a0a0a',
-    cardBgColor: siteSettings.cardBgColor || '#171717',
+    bgColor: siteSettings.bgColor || '#09090b',
+    cardBgColor: siteSettings.cardBgColor || '#121215',
     textPrimaryColor: siteSettings.textPrimaryColor || '#ffffff',
-    textSecondaryColor: siteSettings.textSecondaryColor || '#a3a3a3',
+    textSecondaryColor: siteSettings.textSecondaryColor || '#a1a1aa',
     heroAnnouncement: siteSettings.heroAnnouncement || ''
   });
   const [themeSaved, setThemeSaved] = useState(false);
@@ -36,6 +38,16 @@ export const AdminDashboard = () => {
   const [artistCreatedSuccess, setArtistCreatedSuccess] = useState(false);
 
   const presets = [
+    {
+      name: 'CMD MTY Blueprint',
+      primary: '#f97316',
+      secondary: '#06b6d4',
+      glow: '#ec4899',
+      bg: '#09090b',
+      cardBg: '#121215',
+      textPrimary: '#ffffff',
+      textSecondary: '#a1a1aa'
+    },
     {
       name: 'Cyberpunk Neon',
       primary: '#8b5cf6',
@@ -65,16 +77,6 @@ export const AdminDashboard = () => {
       cardBg: '#18181b',
       textPrimary: '#ffffff',
       textSecondary: '#a1a1aa'
-    },
-    {
-      name: 'Emerald Studio',
-      primary: '#10b981',
-      secondary: '#14b8a6',
-      glow: '#34d399',
-      bg: '#04120e',
-      cardBg: '#0b241c',
-      textPrimary: '#ffffff',
-      textSecondary: '#6ee7b7'
     },
     {
       name: 'Obsidian Minimal',
@@ -141,17 +143,14 @@ export const AdminDashboard = () => {
         {/* Banner Superior */}
         <div className="p-6 rounded-3xl bg-neutral-900 border border-neutral-800 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div 
-              className="p-3 rounded-2xl border text-white"
-              style={{
-                background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`,
-                borderColor: `var(--color-primary)`
-              }}
-            >
-              <Shield className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl bg-neutral-950 border border-orange-500/50 p-2 shadow-lg flex items-center justify-center">
+              <CMDIsotype className="w-full h-full text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-white">Estudio de Administración General</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-extrabold text-white">Estudio de Administración</h1>
+                <CMDWordmark size="text-sm" />
+              </div>
               <p className="text-xs text-neutral-300">
                 Personaliza absolutamente todos los colores del sitio, fondos, textos y administra las cuentas de los artistas.
               </p>
@@ -168,7 +167,7 @@ export const AdminDashboard = () => {
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
-              <Palette className="w-4 h-4" />
+              <Palette className="w-4 h-4 text-orange-400" />
               <span>Estilo y Colores Totales</span>
             </button>
             <button
@@ -179,7 +178,7 @@ export const AdminDashboard = () => {
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
-              <UserPlus className="w-4 h-4" />
+              <UserPlus className="w-4 h-4 text-cyan-400" />
               <span>Cuentas de Artistas ({artists.length})</span>
             </button>
           </div>
@@ -421,7 +420,7 @@ export const AdminDashboard = () => {
               <div className="flex justify-end pt-2">
                 <button
                   type="submit"
-                  className="px-6 py-3 rounded-2xl text-white font-bold text-sm hover:scale-105 transition-all shadow-lg"
+                  className="px-6 py-3 rounded-2xl text-white font-bold text-sm hover:scale-105 transition-all shadow-lg border border-orange-500/50"
                   style={{
                     background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
                   }}

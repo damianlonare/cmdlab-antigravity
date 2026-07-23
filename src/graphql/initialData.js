@@ -1,17 +1,17 @@
 export const initialData = {
   siteSettings: {
     siteName: "CMD Lab",
-    slogan: "Colectivo Artístico de Música & Diseño Sonoro",
-    manifesto: "CMD Lab es un colectivo creativo independiente que une a músicos, productores, diseñadores de sonido y artistas visuales. Exploramos paisajes sonoros, lanzamientos digitales y colaboraciones audiovisuales sin fronteras.",
-    primaryColor: "#8b5cf6", // Violeta
-    secondaryColor: "#06b6d4", // Cían
-    accentGlow: "#ec4899", // Rosa neón
-    bgColor: "#0a0a0a", // Fondo principal
-    cardBgColor: "#171717", // Fondo de tarjetas
-    textPrimaryColor: "#ffffff", // Texto principal
-    textSecondaryColor: "#a3a3a3", // Texto secundario
+    slogan: "CMD es la música urbana de Monterrey",
+    manifesto: "CMD significa comando, y un comando se compone de distintos elementos. CMD Lab nace en una época digital, pero dentro de la urbanidad de Monterrey. Somos un colectivo de música urbana, producción electrónica y diseño sonoro experimental.",
+    primaryColor: "#8b5cf6",
+    secondaryColor: "#06b6d4",
+    accentGlow: "#ec4899",
+    bgColor: "#09090b",
+    cardBgColor: "#121215",
+    textPrimaryColor: "#ffffff",
+    textSecondaryColor: "#a1a1aa",
     themeMode: "dark",
-    heroAnnouncement: "⚡ ¡El nuevo lanzamiento del colectivo CMD Lab ya está disponible!",
+    heroAnnouncement: "⚡ CMD Lab: La música urbana y digital de Monterrey. ¡Nuevos lanzamientos en vivo!",
     groupSocials: [
       { platform: "YouTube", url: "https://www.youtube.com/@cmd_lab", label: "@cmd_lab" },
       { platform: "YouTube Channel", url: "https://www.youtube.com/channel/UCAeJ43Cwu5gNhtzyiigCGDQ", label: "Canal CMD Lab" },
@@ -24,11 +24,11 @@ export const initialData = {
       name: "Damian Lonare",
       handle: "ProdByLonare",
       role: "Fundador / Productor Musical & Diseñador Sonoro",
-      bio: "Productor musical, compositor y artista sonoro. Fundador de CMD Lab. Especializado en ritmos atmosféricos, texturas electrónicas y producciones audiovisuales.",
+      bio: "Productor musical, compositor y artista sonoro. Fundador de CMD Lab en Monterrey. Especializado en ritmos urbanos atmosféricos, síntesis digital y producciones audiovisuales.",
       avatar: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=80",
       coverImage: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&auto=format&fit=crop&q=80",
       isFounder: true,
-      genres: ["Electrónica", "Ambient", "Experimental", "Lo-Fi"],
+      genres: ["Música Urbana", "Electrónica", "Lo-Fi", "Trap Experimental"],
       socialLinks: [
         { platform: "Spotify", url: "https://open.spotify.com/artist/3EQvBlLuI3dCU5aU3wLvGU", label: "Artista en Spotify" },
         { platform: "Apple Music", url: "https://music.apple.com/mx/artist/lonare/1607355080", label: "Apple Music" },
@@ -40,9 +40,9 @@ export const initialData = {
       tracks: [
         {
           id: "track-1",
-          title: "CMD Resonance",
+          title: "Monterrey Command",
           duration: "3:45",
-          genre: "Ambient Synth",
+          genre: "Urbano Synth",
           releaseDate: "2026-06-15",
           audioUrl: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3",
           coverUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500&auto=format&fit=crop&q=80",
@@ -63,10 +63,10 @@ export const initialData = {
       posts: [
         {
           id: "post-1",
-          title: "Bienvenidos al espacio oficial de CMD Lab",
-          content: "Creamos CMD Lab como un lienzo abierto para la creación sonora colaborativa, los visuales generativos y la experimentación sin límites. ¡Pronto lanzaremos nuevas producciones!",
+          title: "CMD es la música urbana de esta ciudad",
+          content: "CMD significa comando, y un comando se compone de distintos elementos. CMD Lab nace en una época digital, pero dentro de la urbanidad de Monterrey. ¡Bienvenidos al movimiento!",
           createdAt: "2026-07-20",
-          tags: ["CMDLab", "Lanzamiento", "Colectivo"],
+          tags: ["CMDLab", "Monterrey", "MúsicaUrbana"],
           mediaUrl: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=800&auto=format&fit=crop&q=80"
         }
       ]
@@ -75,12 +75,12 @@ export const initialData = {
       id: "artist-kira",
       name: "Kira Waves",
       handle: "KiraSynth",
-      role: "Especialista en Síntesis Modular",
-      bio: "Diseñadora de sonido generativo y exploradora de síntesis análoga. Diseñando texturas sonoras profundas para las producciones de CMD Lab.",
+      role: "Especialista en Síntesis Modular & Beats",
+      bio: "Diseñadora de sonido generativo y exploradora de síntesis análoga en Monterrey. Diseñando texturas sonoras para CMD Lab.",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
       coverImage: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1200&auto=format&fit=crop&q=80",
       isFounder: false,
-      genres: ["Generativo", "Modular", "Ambient Industrial"],
+      genres: ["Generativo", "Modular", "Trap Ambient"],
       socialLinks: [
         { platform: "Instagram", url: "https://instagram.com", label: "@kirasynth" },
         { platform: "SoundCloud", url: "https://soundcloud.com", label: "SoundCloud" }
@@ -110,12 +110,12 @@ export const initialData = {
       id: "artist-vektor",
       name: "Vektor Visuals",
       handle: "VektorArt",
-      role: "Artista Audiovisual 3D",
-      bio: "Especializado en arte visual reactivo, proyecciones inmersivas y producción de música electrónica.",
+      role: "Artista Audiovisual 3D & Arte Urbano",
+      bio: "Especializado en arte visual reactivo, proyecciones inmersivas y producción audiovisual para CMD Lab.",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
       coverImage: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&auto=format&fit=crop&q=80",
       isFounder: false,
-      genres: ["Audiovisual", "Glitch", "IDM"],
+      genres: ["Audiovisual", "Glitch", "3D Art"],
       socialLinks: [
         { platform: "YouTube", url: "https://youtube.com", label: "Vektor Visuals" },
         { platform: "Instagram", url: "https://instagram.com", label: "@vektor_art" }
