@@ -111,9 +111,11 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 DECLARE
-  jwt_role text := coalesce(auth.role(), '');
+  jwt_role text := coalesce(auth.jwt() ->> 'role', '');
 BEGIN
-  -- No end-user JWT: SQL editor (postgres) and service_role may set flags.
+  -- auth.jwt() is null in the SQL editor, so promotions from there are allowed.
+  -- The Data API cannot change is_admin or is_founder: those columns are left
+  -- out of the UPDATE grant, including for admins.
   IF jwt_role NOT IN ('anon', 'authenticated') THEN
     RETURN NEW;
   END IF;
@@ -135,6 +137,9 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+
+COMMENT ON FUNCTION private.protect_profile_privileges() IS
+  'Blocks anon and authenticated users from granting is_admin or is_founder unless they are already an admin. Column grants also omit those columns, so nobody can promote through the Data API; promotions run in the SQL editor.';
 
 REVOKE ALL ON FUNCTION private.protect_profile_privileges() FROM PUBLIC;
 REVOKE ALL ON FUNCTION private.protect_profile_privileges() FROM anon, authenticated;
@@ -286,6 +291,8 @@ GRANT INSERT, UPDATE, DELETE ON TABLE
   public.posts
 TO authenticated;
 
+-- is_admin and is_founder are omitted on purpose, including for admins.
+-- Promote an account from the SQL editor. See the migration file for the statement.
 GRANT INSERT, DELETE ON TABLE public.profiles TO authenticated;
 GRANT UPDATE (
   email,

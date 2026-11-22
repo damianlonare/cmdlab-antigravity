@@ -58,10 +58,12 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 DECLARE
-  jwt_role text := coalesce(auth.role(), '');
+  jwt_role text := coalesce(auth.jwt() ->> 'role', '');
 BEGIN
-  -- No end-user JWT: SQL editor (postgres) and service_role may set flags.
-  -- That is how the owner promotes the first admin.
+  -- auth.jwt() is null in the SQL editor, so promotions from there are allowed.
+  -- The Data API cannot change is_admin or is_founder: those columns are left
+  -- out of the UPDATE grant, including for admins. This UPDATE branch is the
+  -- backstop if that grant is widened later.
   IF jwt_role NOT IN ('anon', 'authenticated') THEN
     RETURN NEW;
   END IF;
@@ -85,7 +87,7 @@ END;
 $$;
 
 COMMENT ON FUNCTION private.protect_profile_privileges() IS
-  'Blocks anon and authenticated users from granting is_admin or is_founder unless they are already an admin.';
+  'Blocks anon and authenticated users from granting is_admin or is_founder unless they are already an admin. Column grants also omit those columns, so nobody can promote through the Data API; promotions run in the SQL editor.';
 
 REVOKE ALL ON FUNCTION private.protect_profile_privileges() FROM PUBLIC;
 REVOKE ALL ON FUNCTION private.protect_profile_privileges() FROM anon, authenticated;
@@ -288,7 +290,9 @@ CREATE POLICY "Admins manage social_links"
 
 -- anon keeps public reads and loses every write grant.
 -- authenticated keeps writes; RLS decides which rows.
--- is_admin / is_founder are excluded from the API update grant.
+-- is_admin and is_founder are omitted from UPDATE on purpose. The admin
+-- profile policy is FOR ALL, but this grant still blocks privilege changes
+-- through PostgREST. Promote an account from the SQL editor.
 REVOKE ALL ON TABLE
   public.profiles,
   public.site_settings,
@@ -346,13 +350,17 @@ END $$;
 COMMIT;
 
 -- Promote your login after you have signed up once. Replace the email, then run
--- this statement on its own in the SQL editor:
+-- this statement on its own in the SQL editor. The Data API cannot set is_admin.
+-- The handle is derived from the email so it does not reuse a fixed value.
+-- ON CONFLICT only sets the flag and leaves an existing handle alone.
+-- If the INSERT fails on the handle unique constraint, pick another handle.
 --
 --   INSERT INTO public.profiles (id, email, name, handle, is_admin)
 --   SELECT id,
 --          email,
 --          COALESCE(raw_user_meta_data->>'name', 'Admin'),
---          'admin',
+--          lower(regexp_replace(split_part(email, '@', 1), '[^a-zA-Z0-9_]', '', 'g'))
+--            || '_' || substr(replace(id::text, '-', ''), 1, 8),
 --          true
 --   FROM auth.users
 --   WHERE email = 'you@example.com'

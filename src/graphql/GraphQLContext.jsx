@@ -115,21 +115,39 @@ export const GraphQLProvider = ({ children }) => {
     fetchSupabaseData();
   }, []);
 
-  // Listen to Supabase Auth State Changes
+  // Listen to Supabase Auth State Changes.
+  // The admin studio is for profiles.is_admin only. A signed-in artist is not an admin.
+  // The lookup is deferred so it does not run inside the auth client's lock.
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, authSession) => {
-      if (authSession?.user) {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, authSession) => {
+      setTimeout(async () => {
+        if (!authSession?.user) {
+          setSession(prev => ({
+            ...prev,
+            authUser: null,
+            role: 'VISITOR'
+          }));
+          return;
+        }
+
+        let isAdmin = false;
+        try {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('is_admin')
+            .eq('id', authSession.user.id)
+            .maybeSingle();
+          isAdmin = !error && profile?.is_admin === true;
+        } catch (err) {
+          console.error('Failed to read admin flag', err);
+        }
+
         setSession(prev => ({
           ...prev,
           authUser: authSession.user,
-          role: 'ADMIN'
+          role: isAdmin ? 'ADMIN' : 'VISITOR'
         }));
-      } else {
-        setSession(prev => ({
-          ...prev,
-          authUser: null
-        }));
-      }
+      }, 0);
     });
 
     return () => {
@@ -198,9 +216,10 @@ export const GraphQLProvider = ({ children }) => {
       if (variables.input.textPrimaryColor) root.style.setProperty('--color-text-primary', variables.input.textPrimaryColor);
       if (variables.input.textSecondaryColor) root.style.setProperty('--color-text-secondary', variables.input.textSecondaryColor);
 
-      // Sync to Supabase in background
+      // supabase-js returns { error } for RLS failures. It does not throw.
+      let synced = false;
       try {
-        await supabase.from('site_settings').upsert({
+        const { error } = await supabase.from('site_settings').upsert({
           id: 1,
           site_name: variables.input.siteName,
           slogan: variables.input.slogan,
@@ -214,11 +233,16 @@ export const GraphQLProvider = ({ children }) => {
           text_secondary_color: variables.input.textSecondaryColor,
           hero_announcement: variables.input.heroAnnouncement
         });
+        if (error) {
+          console.error('Supabase settings update error', error.message);
+        } else {
+          synced = true;
+        }
       } catch (err) {
         console.error('Supabase settings update error', err);
       }
 
-      return newData.siteSettings;
+      return { settings: newData.siteSettings, synced };
     }
 
     if (mutationName === 'createArtist') {
