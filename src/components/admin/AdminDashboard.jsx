@@ -24,6 +24,7 @@ export const AdminDashboard = () => {
     heroAnnouncement: siteSettings.heroAnnouncement || ''
   });
   const [themeSaved, setThemeSaved] = useState(false);
+  const [themeSyncError, setThemeSyncError] = useState('');
 
   // Formulario de Nuevo Artista
   const [artistForm, setArtistForm] = useState({
@@ -90,6 +91,21 @@ export const AdminDashboard = () => {
     }
   ];
 
+  const persistTheme = async (input) => {
+    setThemeSaved(false);
+    setThemeSyncError('');
+    const result = await executeMutation('updateSiteSettings', { input });
+    if (result?.synced) {
+      setThemeSaved(true);
+    } else {
+      setThemeSyncError('Los colores quedaron en este navegador. No se publicaron: inicia sesión con una cuenta marcada como is_admin.');
+    }
+    setTimeout(() => {
+      setThemeSaved(false);
+      setThemeSyncError('');
+    }, 60000);
+  };
+
   const applyPreset = (preset) => {
     const updated = {
       ...themeForm,
@@ -102,16 +118,12 @@ export const AdminDashboard = () => {
       textSecondaryColor: preset.textSecondary
     };
     setThemeForm(updated);
-    executeMutation('updateSiteSettings', { input: updated });
-    setThemeSaved(true);
-    setTimeout(() => setThemeSaved(false), 3000);
+    persistTheme(updated);
   };
 
   const handleThemeSubmit = (e) => {
     e.preventDefault();
-    executeMutation('updateSiteSettings', { input: themeForm });
-    setThemeSaved(true);
-    setTimeout(() => setThemeSaved(false), 3000);
+    persistTheme(themeForm);
   };
 
   const handleCreateArtist = (e) => {
@@ -225,6 +237,11 @@ export const AdminDashboard = () => {
                   <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-950/80 px-3 py-1 rounded-lg border border-emerald-800 font-medium">
                     <Check className="w-3.5 h-3.5" />
                     <span>¡Colores Aplicados y Guardados!</span>
+                  </span>
+                )}
+                {themeSyncError && (
+                  <span className="max-w-sm text-xs text-amber-300 bg-amber-950/80 px-3 py-1 rounded-lg border border-amber-800 font-medium">
+                    {themeSyncError}
                   </span>
                 )}
               </div>

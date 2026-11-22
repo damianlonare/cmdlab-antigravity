@@ -23,8 +23,7 @@ export const Navbar = () => {
   const handleAuthSuccess = (user) => {
     setSession(prev => ({
       ...prev,
-      authUser: user,
-      role: 'ADMIN'
+      authUser: user
     }));
   };
 

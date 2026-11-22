@@ -38,9 +38,11 @@ Instead of treating the collective as a standard pop group, CMD Lab emphasizes *
 > **Security is a Top Priority**: Below are critical production security and performance milestones to be implemented before scaling to high-traffic environments.
 
 #### 🛡️ 1. Security Hardening TODOs
-- [ ] **Strict Supabase Row-Level Security (RLS) Rules**:
-  - Enforce `auth.uid() = artist_id` check on all `INSERT`, `UPDATE`, and `DELETE` operations so artists can *only* mutate their own profile, tracks, and posts.
-  - Restrict `public.site_settings` table mutation access strictly to users with `is_admin = true`.
+- [x] **Strict Supabase Row-Level Security (RLS) Rules**:
+  - Public `SELECT` stays open on `profiles`, `site_settings`, `social_links`, `tracks`, and `posts`.
+  - Signed-in artists can `INSERT` / `UPDATE` / `DELETE` only their own profile, tracks, posts, and social links (`auth.uid()` must match the row).
+  - `site_settings` writes require `profiles.is_admin = true`. `is_admin` is granted from the SQL editor, not by sign-up.
+  - Existing projects: run [`supabase/migrations/20261122170000_restrict_rls_writes.sql`](./supabase/migrations/20261122170000_restrict_rls_writes.sql).
 - [ ] **Input Sanitization & XSS Protection**:
   - Integrate `DOMPurify` to sanitize all artist-submitted bios, posts, taglines, and manifesto text before rendering into HTML.
 - [ ] **Content Security Policy (CSP) & HTTP Headers**:
@@ -49,7 +51,7 @@ Instead of treating the collective as a standard pop group, CMD Lab emphasizes *
   - Enable rate-limiting on authentication attempts in Supabase Auth Settings to prevent brute-force attacks.
   - Enable Two-Factor Authentication (MFA/2FA) for Super Admin accounts.
 - [ ] **Credential Protection**:
-  - Ensure Supabase Service Role Key is **NEVER** exposed in the client-side bundle or public repository (`.env` only includes anon key).
+  - The Supabase service role key must never be committed or shipped in the client bundle. `.env` holds only the anon key, is gitignored, and is not a fallback inside source. Copy [`.env.example`](./.env.example) to `.env`.
 
 #### ⚡ 2. Performance Optimization TODOs
 - [ ] **React Code-Splitting (`React.lazy` & `Suspense`)**:
@@ -124,7 +126,8 @@ cmdlab-antigravity/
 │   ├── App.jsx                     # Root application container
 │   ├── index.css                   # Dynamic CSS variables & Tailwind imports
 │   └── main.jsx                    # React root entry point
-├── .env                            # Supabase URL & anon key config
+├── .env.example                    # Placeholder names for the Supabase URL and anon key
+├── .env                            # Local secrets (gitignored; do not commit)
 ├── index.html                      # SEO & OpenGraph social sharing meta tags
 ├── supabase_setup.sql              # Database schema, RLS policies & seed data
 ├── vercel.json                     # Vercel SPA rewrite configuration
@@ -152,10 +155,9 @@ cmdlab-antigravity/
    ```
 
 3. Configure Environment Variables:
-   Create a `.env` file in the root directory:
-   ```env
-   VITE_SUPABASE_URL=https://hpsrvudjizfrivozcnyb.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   Copy the example file and set both values from Supabase → Project Settings → API. Use the anon public key. Do not put the service role key in this file.
+   ```bash
+   cp .env.example .env
    ```
 
 4. Start the local development server:
@@ -179,6 +181,7 @@ To connect your live Supabase PostgreSQL database:
 2. Navigate to **SQL Editor**.
 3. Copy the contents of [`supabase_setup.sql`](./supabase_setup.sql) and click **Run**.
 4. This creates the required tables (`profiles`, `site_settings`, `social_links`, `tracks`, `posts`) along with Row-Level Security (RLS) policies.
+5. If those tables already exist, do not re-run the full script. Run [`supabase/migrations/20261122170000_restrict_rls_writes.sql`](./supabase/migrations/20261122170000_restrict_rls_writes.sql) instead, then promote your user with the commented statement at the bottom of that file.
 
 ---
 
